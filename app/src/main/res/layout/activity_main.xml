@@ -12,9 +12,9 @@
             android:layout_height="match_parent">
     </widget.kaedea.com.swipeloadingview.SwipeDetectorLayout>
 
-    <TextView android:textSize="18sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Text"/>
+    <TextView android:textSize="18sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEXT TOP"/>
     <TextView android:textSize="18sp" android:layout_alignParentBottom="true" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:text="Text BOTTOM"/>
+            android:layout_height="wrap_content" android:text="TEXT BOTTOM"/>
 
 
     <!-- LoadingView, you can custom it as you like! -->

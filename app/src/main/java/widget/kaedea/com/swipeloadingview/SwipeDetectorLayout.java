@@ -11,7 +11,6 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -19,14 +18,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created kaede on 1/26/16.
  */
 @SuppressLint("LongLogTag")
-public class SwipeDetectorLayout extends RelativeLayout {
+public class SwipeDetectorLayout extends View {
 	public static final String TAG = "SwipeDetectorLayout";
 
-	AtomicBoolean isIntercept = new AtomicBoolean();
 	ITouchEventProxy iTouchEventProxy;
-
 	OnSwipeListener mOnSwipeListener;
 
+	AtomicBoolean isCreated = new AtomicBoolean();
 	View mLoadingView;
 	float mSwipeRatio;
 	private float mSwipeRatioThreshold;
@@ -53,7 +51,8 @@ public class SwipeDetectorLayout extends RelativeLayout {
 	}
 
 	private void init() {
-		isIntercept.set(false);
+		isCreated.set(false);
+		setInterceptTouchEvent(true);
 		iTouchEventProxy = new ITouchEventProxy() {
 			int threshold = 100;
 
@@ -106,6 +105,14 @@ public class SwipeDetectorLayout extends RelativeLayout {
 		};
 	}
 
+	private void setInterceptTouchEvent(boolean isConsume) {
+		setClickable(isConsume);
+	}
+
+	private boolean isConsumeTouchEvent(){
+		return isClickable();
+	}
+
 	public void hideLoadingView(boolean isShowAnimation) {
 		if (mLoadingView == null) {
 			LogUtil.w(TAG, "[hideLoadingView] mLoadingView is null");
@@ -114,7 +121,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 		LogUtil.d(TAG, "[hideLoadingView] isShowAnimation = " + isShowAnimation);
 		if (!isShowAnimation) {
 			ViewCompat.setTranslationY(mLoadingView, getTotalHeight());
-			isIntercept.set(true);
+			setInterceptTouchEvent(true);
 			return;
 		}
 		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), getTotalHeight());
@@ -122,7 +129,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 		objectAnimator.addListener(new AnimatorEndListener() {
 			@Override
 			public void onAnimationEnd(Animator animation) {
-				isIntercept.set(true); // Intercept TouchEvent, or we can not get the Action_Move event.
+				setInterceptTouchEvent(true); // Intercept TouchEvent, or we can not get the Action_Move event.
 			}
 		});
 		objectAnimator.start();
@@ -137,7 +144,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 		LogUtil.d(TAG, "[showLoadingView] isShowAnimation = " + isShowAnimation);
 		if (!isShowAnimation) {
 			ViewCompat.setTranslationY(mLoadingView, 0f);
-			isIntercept.set(false);
+			setInterceptTouchEvent(false);
 			return;
 		}
 		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), 0f);
@@ -145,7 +152,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 		objectAnimator.addListener(new AnimatorEndListener() {
 			@Override
 			public void onAnimationEnd(Animator animation) {
-				isIntercept.set(false);
+				setInterceptTouchEvent(false);
 			}
 		});
 		objectAnimator.start();
@@ -159,13 +166,17 @@ public class SwipeDetectorLayout extends RelativeLayout {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		// Hide the loading view in the very beginning.
-		hideLoadingView(false);
+		if (!isCreated.get()){
+			hideLoadingView(false);
+			isCreated.set(true);
+		}
+
 	}
 
-	@Override
+	/*@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		return isIntercept.get() || super.onInterceptTouchEvent(ev);
-	}
+	}*/
 
 	float y_pre = 0;
 	float y_down = 0;
@@ -204,7 +215,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 				}
 				break;
 		}
-		return isIntercept.get() || super.onTouchEvent(event);
+		return isConsumeTouchEvent() || super.onTouchEvent(event);
 	}
 
 	private void logEventInfo(String type, MotionEvent event) {

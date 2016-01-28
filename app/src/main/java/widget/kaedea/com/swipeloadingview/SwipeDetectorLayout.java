@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,9 +17,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created kaede on 1/26/16.
  */
 @SuppressLint("LongLogTag")
-public class SwipeDetectorLayout extends RelativeLayout{
+public class SwipeDetectorLayout extends RelativeLayout {
 	AtomicBoolean isIntercept = new AtomicBoolean();
 	ITouchEventProxy iTouchEventProxy;
+	View viewLoading;
+	float swipeRatio;
 
 	public static final String TAG = "SwipeDetectorLayout";
 
@@ -48,10 +51,13 @@ public class SwipeDetectorLayout extends RelativeLayout{
 		return isIntercept.get() || super.onInterceptTouchEvent(ev);
 	}
 
-	private void init(){
+	private void init() {
 		isIntercept.set(true); // 拦截TouchEvent
+		/*Activity activity = (Activity) getContext();
+		viewLoading = activity.findViewById(R.id.view_loading);*/
 		iTouchEventProxy = new ITouchEventProxy() {
 			int threshold = 50;
+
 			@Override
 			public int getThreshold() {
 				Log.i(TAG, "[getThreshold] threshold =" + threshold);
@@ -60,7 +66,11 @@ public class SwipeDetectorLayout extends RelativeLayout{
 
 			@Override
 			public void onTouchOffset(float offsetY) {
-				Log.i(TAG, "[onTouchOffset] offsetY =" + offsetY);
+				float targetTranslationY = viewLoading.getTranslationY() + offsetY;
+				Log.i(TAG, "[onTouchOffset] offsetY =" + offsetY + " viewLoading.getTranslationY() = " + viewLoading.getTranslationY() + " targetTranslationY=" + targetTranslationY);
+				ViewCompat.setTranslationY(viewLoading, targetTranslationY);
+				swipeRatio = 1f - viewLoading.getTranslationY()/SwipeDetectorLayout.this.getMeasuredHeight();
+				Log.i(TAG, "[onTouchOffset] swipeRatio ="+swipeRatio);
 			}
 		};
 	}
@@ -68,6 +78,7 @@ public class SwipeDetectorLayout extends RelativeLayout{
 	float y_pre = 0;
 	float y_down = 0;
 	boolean isBeginSwipe = false;
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (iTouchEventProxy == null) return super.onTouchEvent(event);
@@ -81,10 +92,10 @@ public class SwipeDetectorLayout extends RelativeLayout{
 				break;
 			case MotionEvent.ACTION_MOVE:
 				logEventInfo("ACTION_MOVE", event);
-				if (isBeginSwipe){
+				if (isBeginSwipe) {
 					iTouchEventProxy.onTouchOffset(event.getY() - y_pre);
 				}
-				if (Math.abs(event.getY() - y_down) >= iTouchEventProxy.getThreshold()){
+				if (Math.abs(event.getY() - y_down) >= iTouchEventProxy.getThreshold()) {
 					iTouchEventProxy.onTouchOffset(event.getY() - y_pre);
 					isBeginSwipe = true;
 				}
@@ -101,12 +112,17 @@ public class SwipeDetectorLayout extends RelativeLayout{
 		return isIntercept.get() || super.onTouchEvent(event);
 	}
 
-	private void logEventInfo(String type,MotionEvent event) {
-		Log.d(TAG, "[onTouchEvent][logEventInfo] "+type+" getY= " + event.getY() + "; getRawY=" + event.getRawY());
+	private void logEventInfo(String type, MotionEvent event) {
+		Log.d(TAG, "[onTouchEvent][logEventInfo] " + type + " getY= " + event.getY() + "; getRawY=" + event.getRawY());
 	}
 
-	public interface ITouchEventProxy{
+	public void setViewLoading(View viewLoading) {
+		this.viewLoading = viewLoading;
+	}
+
+	public interface ITouchEventProxy {
 		public int getThreshold();
+
 		public void onTouchOffset(float offsetY);
 	}
 }

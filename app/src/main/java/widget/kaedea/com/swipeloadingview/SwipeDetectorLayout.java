@@ -30,6 +30,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 	View mLoadingView;
 	float mSwipeRatio;
 	private float mSwipeRatioThreshold;
+
 	public SwipeDetectorLayout(Context context) {
 		super(context);
 		init();
@@ -49,11 +50,6 @@ public class SwipeDetectorLayout extends RelativeLayout {
 	public SwipeDetectorLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
 		super(context, attrs, defStyleAttr, defStyleRes);
 		init();
-	}
-
-	@Override
-	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		return isIntercept.get() || super.onInterceptTouchEvent(ev);
 	}
 
 	private void init() {
@@ -80,7 +76,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 				ViewCompat.setTranslationY(mLoadingView, targetTranslationY);
 				// Notify swipe event's progress.
 				LogUtil.d(TAG, "[onTouchOffset] Notify swipe event's progress.");
-				if (mOnSwipeListener !=null)
+				if (mOnSwipeListener != null)
 					mOnSwipeListener.onSwipping(mSwipeRatio);
 			}
 
@@ -88,21 +84,21 @@ public class SwipeDetectorLayout extends RelativeLayout {
 			public void onTouchFinished() {
 				if (mLoadingView.getTranslationY() > SwipeDetectorLayout.this.getMeasuredHeight()) {
 					ViewCompat.setTranslationY(mLoadingView, getTotalHeight());
-					if (mOnSwipeListener !=null)
+					if (mOnSwipeListener != null)
 						mOnSwipeListener.onSwipeCanceled();
 				} else {
 					mSwipeRatioThreshold = 0.5f;
-					if (mSwipeRatio <= mSwipeRatioThreshold){
+					if (mSwipeRatio <= mSwipeRatioThreshold) {
 						// Can not reach the "Swipe Threshold", therefore taking it as Cancel;
 						hideLoadingView(true);
 						LogUtil.d(TAG, "[onTouchFinished] Swipe Cancel");
-						if (mOnSwipeListener !=null)
+						if (mOnSwipeListener != null)
 							mOnSwipeListener.onSwipeCanceled();
-					}else {
+					} else {
 						// Reach the "Swipe Threshold", therefore taking it as Finish;
 						showLoadingView(true);
 						LogUtil.d(TAG, "[onTouchFinished] Swipe Finish");
-						if (mOnSwipeListener !=null)
+						if (mOnSwipeListener != null)
 							mOnSwipeListener.onSwipeFinished();
 					}
 				}
@@ -111,7 +107,11 @@ public class SwipeDetectorLayout extends RelativeLayout {
 	}
 
 	public void hideLoadingView(boolean isShowAnimation) {
-		LogUtil.d(TAG,"[hideLoadingView] isShowAnimation = "+isShowAnimation);
+		if (mLoadingView == null) {
+			LogUtil.w(TAG, "[hideLoadingView] mLoadingView is null");
+			return;
+		}
+		LogUtil.d(TAG, "[hideLoadingView] isShowAnimation = " + isShowAnimation);
 		if (!isShowAnimation) {
 			ViewCompat.setTranslationY(mLoadingView, getTotalHeight());
 			isIntercept.set(true);
@@ -130,7 +130,11 @@ public class SwipeDetectorLayout extends RelativeLayout {
 	}
 
 	public void showLoadingView(boolean isShowAnimation) {
-		LogUtil.d(TAG,"[showLoadingView] isShowAnimation = "+isShowAnimation);
+		if (mLoadingView == null) {
+			LogUtil.w(TAG, "[showLoadingView] mLoadingView is null");
+			return;
+		}
+		LogUtil.d(TAG, "[showLoadingView] isShowAnimation = " + isShowAnimation);
 		if (!isShowAnimation) {
 			ViewCompat.setTranslationY(mLoadingView, 0f);
 			isIntercept.set(false);
@@ -151,10 +155,22 @@ public class SwipeDetectorLayout extends RelativeLayout {
 		return this.getMeasuredHeight();
 	}
 
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		// Hide the loading view in the very beginning.
+		hideLoadingView(false);
+	}
+
+	@Override
+	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		return isIntercept.get() || super.onInterceptTouchEvent(ev);
+	}
 
 	float y_pre = 0;
 	float y_down = 0;
 	boolean isBeginSwipe = false;
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (iTouchEventProxy == null) return super.onTouchEvent(event);
@@ -182,7 +198,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 				logEventInfo("ACTION_OTHERS", event);
 				y_down = 0;
 				y_pre = 0;
-				if (isBeginSwipe){
+				if (isBeginSwipe) {
 					iTouchEventProxy.onTouchFinished();
 					isBeginSwipe = false;
 				}
@@ -197,8 +213,6 @@ public class SwipeDetectorLayout extends RelativeLayout {
 
 	public void setLoadingView(View loadingView) {
 		this.mLoadingView = loadingView;
-		// Hide the loading view in the very beginning.
-		hideLoadingView(false);
 	}
 
 	public void setOnSwipeListener(OnSwipeListener onSwipeListener) {

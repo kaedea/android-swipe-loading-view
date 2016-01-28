@@ -1,5 +1,7 @@
 package widget.kaedea.com.swipeloadingview;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -7,7 +9,6 @@ import android.graphics.Canvas;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -19,13 +20,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @SuppressLint("LongLogTag")
 public class SwipeDetectorLayout extends RelativeLayout {
-	AtomicBoolean isIntercept = new AtomicBoolean();
-	ITouchEventProxy iTouchEventProxy;
-	View viewLoading;
-	float swipeRatio;
-
 	public static final String TAG = "SwipeDetectorLayout";
 
+	AtomicBoolean isIntercept = new AtomicBoolean();
+	ITouchEventProxy iTouchEventProxy;
+
+	OnSwipeListener mOnSwipeListener;
+
+	View mLoadingView;
+	float mSwipeRatio;
+	private float mSwipeRatioThreshold;
 	public SwipeDetectorLayout(Context context) {
 		super(context);
 		init();
@@ -53,60 +57,109 @@ public class SwipeDetectorLayout extends RelativeLayout {
 	}
 
 	private void init() {
-		isIntercept.set(true); // 拦截TouchEvent
-		/*Activity activity = (Activity) getContext();
-		viewLoading = activity.findViewById(R.id.view_loading);*/
+		isIntercept.set(false);
 		iTouchEventProxy = new ITouchEventProxy() {
 			int threshold = 50;
 
 			@Override
 			public int getThreshold() {
-				Log.i(TAG, "[getThreshold] threshold =" + threshold);
+				LogUtil.i(TAG, "[getThreshold] threshold =" + threshold);
 				return threshold;
 			}
 
 			@Override
 			public void onTouchOffset(float offsetY) {
-				float targetTranslationY = viewLoading.getTranslationY() + offsetY;
-				swipeRatio = 1f - viewLoading.getTranslationY() / getTotalHeight();
-				Log.i(TAG, "[onTouchOffset] swipeRatio =" + swipeRatio);
-				Log.i(TAG, "[onTouchOffset] offsetY =" + offsetY + " viewLoading.getTranslationY() = " + viewLoading.getTranslationY() + " targetTranslationY=" + targetTranslationY);
-				if (offsetY<0f && targetTranslationY<0f) {
-					ViewCompat.setTranslationY(viewLoading, 0f);
+				float targetTranslationY = mLoadingView.getTranslationY() + offsetY;
+				mSwipeRatio = 1f - mLoadingView.getTranslationY() / getTotalHeight();
+				LogUtil.i(TAG, "[onTouchOffset] mSwipeRatio =" + mSwipeRatio);
+				LogUtil.i(TAG, "[onTouchOffset] offsetY =" + offsetY + " mLoadingView.getTranslationY() = " + mLoadingView.getTranslationY() + " targetTranslationY=" + targetTranslationY);
+				if (offsetY < 0f && targetTranslationY < 0f) {
+					ViewCompat.setTranslationY(mLoadingView, 0f);
 					return;
 				}
-				ViewCompat.setTranslationY(viewLoading, targetTranslationY);
+				ViewCompat.setTranslationY(mLoadingView, targetTranslationY);
+				if (mOnSwipeListener !=null)
+					mOnSwipeListener.onSwipping(mSwipeRatio);
 			}
 
 			@Override
 			public void onTouchFinished() {
-				if (viewLoading.getTranslationY()>SwipeDetectorLayout.this.getMeasuredHeight()){
-					ViewCompat.setTranslationY(viewLoading, getTotalHeight());
+				if (mLoadingView.getTranslationY() > SwipeDetectorLayout.this.getMeasuredHeight()) {
+					ViewCompat.setTranslationY(mLoadingView, getTotalHeight());
+					if (mOnSwipeListener !=null)
+						mOnSwipeListener.onSwipeCanceled();
+				} else {
+					mSwipeRatioThreshold = 0.5f;
+					if (mSwipeRatio <= mSwipeRatioThreshold){
+						// Can not reach the "Swipe Threshold", therefore taking it as Cancel;
+						hideLoadingView(true);
+						LogUtil.d(TAG, "[onTouchFinished] Swipe Cancel");
+						if (mOnSwipeListener !=null)
+							mOnSwipeListener.onSwipeCanceled();
+					}else {
+						// Reach the "Swipe Threshold", therefore taking it as Finish;
+						showLoadingView(true);
+						LogUtil.d(TAG, "[onTouchFinished] Swipe Finish");
+						if (mOnSwipeListener !=null)
+							mOnSwipeListener.onSwipeFinished();
+					}
 				}
 			}
 		};
 	}
 
-	public void resetLoadingView(boolean isShowAnimation){
-		if (!isShowAnimation){
-			ViewCompat.setTranslationY(viewLoading, getTotalHeight());
+	public void hideLoadingView(boolean isShowAnimation) {
+		LogUtil.d(TAG,"[hideLoadingView] isShowAnimation = "+isShowAnimation);
+		if (!isShowAnimation) {
+			ViewCompat.setTranslationY(mLoadingView, getTotalHeight());
+			isIntercept.set(true);
+			return;
 		}
+		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), getTotalHeight());
+		objectAnimator.setDuration(500);
+		objectAnimator.addListener(new AnimatorEndListener() {
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				isIntercept.set(true); // Intercept TouchEvent, or we can not get the Action_Move event.
+			}
+		});
+		objectAnimator.start();
+
 	}
 
-	private int getTotalHeight(){
+	public void showLoadingView(boolean isShowAnimation) {
+		LogUtil.d(TAG,"[showLoadingView] isShowAnimation = "+isShowAnimation);
+		if (!isShowAnimation) {
+			ViewCompat.setTranslationY(mLoadingView, 0f);
+			isIntercept.set(false);
+			return;
+		}
+		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), 0f);
+		objectAnimator.setDuration(500);
+		objectAnimator.addListener(new AnimatorEndListener() {
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				isIntercept.set(false);
+			}
+		});
+		objectAnimator.start();
+	}
+
+	private int getTotalHeight() {
 		return this.getMeasuredHeight();
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		ViewCompat.setTranslationY(viewLoading, getTotalHeight());
+		// Hide the loading view in the very beginning.
+		hideLoadingView(false);
 	}
 
 	float y_pre = 0;
+
 	float y_down = 0;
 	boolean isBeginSwipe = false;
-
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (iTouchEventProxy == null) return super.onTouchEvent(event);
@@ -130,7 +183,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 				y_pre = event.getY();
 				break;
 			default:
-				Log.i(TAG, "Action = " + event.getAction());
+				LogUtil.i(TAG, "Action = " + event.getAction());
 				logEventInfo("ACTION_OTHERS", event);
 				y_down = 0;
 				y_pre = 0;
@@ -142,12 +195,17 @@ public class SwipeDetectorLayout extends RelativeLayout {
 	}
 
 	private void logEventInfo(String type, MotionEvent event) {
-		Log.d(TAG, "[onTouchEvent][logEventInfo] " + type + " getY= " + event.getY() + "; getRawY=" + event.getRawY());
+		LogUtil.d(TAG, "[onTouchEvent][logEventInfo] " + type + " getY= " + event.getY() + "; getRawY=" + event.getRawY());
 	}
 
-	public void setViewLoading(View viewLoading) {
-		this.viewLoading = viewLoading;
+	public void setLoadingView(View loadingView) {
+		this.mLoadingView = loadingView;
 	}
+
+	public void setOnSwipeListener(OnSwipeListener onSwipeListener) {
+		this.mOnSwipeListener = onSwipeListener;
+	}
+
 
 	public interface ITouchEventProxy {
 		public int getThreshold();
@@ -155,5 +213,14 @@ public class SwipeDetectorLayout extends RelativeLayout {
 		public void onTouchOffset(float offsetY);
 
 		public void onTouchFinished();
+	}
+
+
+	public interface OnSwipeListener {
+		public void onSwipping(float swipeRatio);
+
+		public void onSwipeFinished();
+
+		public void onSwipeCanceled();
 	}
 }

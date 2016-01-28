@@ -67,10 +67,21 @@ public class SwipeDetectorLayout extends RelativeLayout {
 			@Override
 			public void onTouchOffset(float offsetY) {
 				float targetTranslationY = viewLoading.getTranslationY() + offsetY;
+				swipeRatio = 1f - viewLoading.getTranslationY() / SwipeDetectorLayout.this.getMeasuredHeight();
+				Log.i(TAG, "[onTouchOffset] swipeRatio =" + swipeRatio);
 				Log.i(TAG, "[onTouchOffset] offsetY =" + offsetY + " viewLoading.getTranslationY() = " + viewLoading.getTranslationY() + " targetTranslationY=" + targetTranslationY);
+				if (offsetY<0f && targetTranslationY<0f) {
+					ViewCompat.setTranslationY(viewLoading, 0f);
+					return;
+				}
 				ViewCompat.setTranslationY(viewLoading, targetTranslationY);
-				swipeRatio = 1f - viewLoading.getTranslationY()/SwipeDetectorLayout.this.getMeasuredHeight();
-				Log.i(TAG, "[onTouchOffset] swipeRatio ="+swipeRatio);
+			}
+
+			@Override
+			public void onTouchFinished() {
+				if (viewLoading.getTranslationY()>SwipeDetectorLayout.this.getMeasuredHeight()){
+					ViewCompat.setTranslationY(viewLoading, SwipeDetectorLayout.this.getMeasuredHeight());
+				}
 			}
 		};
 	}
@@ -107,6 +118,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 				y_down = 0;
 				y_pre = 0;
 				isBeginSwipe = false;
+				iTouchEventProxy.onTouchFinished();
 				break;
 		}
 		return isIntercept.get() || super.onTouchEvent(event);
@@ -124,5 +136,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 		public int getThreshold();
 
 		public void onTouchOffset(float offsetY);
+
+		public void onTouchFinished();
 	}
 }

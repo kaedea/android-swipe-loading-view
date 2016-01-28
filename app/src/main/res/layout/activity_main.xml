@@ -8,9 +8,12 @@
     <widget.kaedea.com.swipeloadingview.SwipeDetectorLayout
             android:id="@+id/swipe_loading"
             android:background="#ddd"
-                                                            android:layout_width="match_parent"
-                                                            android:layout_height="match_parent"></widget.kaedea.com.swipeloadingview.SwipeDetectorLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></widget.kaedea.com.swipeloadingview.SwipeDetectorLayout>
     <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="BUTTON"/>
-    <Button android:layout_alignParentBottom="true" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="BUTTON BOTTOM"/>
-    <TextView android:background="#aaa" android:gravity="center" android:id="@+id/view_loading" android:text="Loading View" android:layout_width="match_parent" android:layout_height="match_parent" android:translationY="50dp"/>
+    <Button android:layout_alignParentBottom="true" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="BUTTON BOTTOM"/>
+    <TextView android:background="#aaa" android:gravity="center" android:id="@+id/view_loading"
+              android:text="Loading View" android:layout_width="match_parent" android:layout_height="match_parent"
+              android:translationY="50dp"/>
 </RelativeLayout>

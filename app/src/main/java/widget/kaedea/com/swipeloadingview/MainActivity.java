@@ -13,5 +13,6 @@ public class MainActivity extends AppCompatActivity {
         SwipeDetectorLayout swipeDetectorLayout = (SwipeDetectorLayout) this.findViewById(R.id.swipe_loading);
         View loadingView = this.findViewById(R.id.view_loading);
         swipeDetectorLayout.setViewLoading(loadingView);
+//        swipeDetectorLayout.resetLoadingView(false);
     }
 }

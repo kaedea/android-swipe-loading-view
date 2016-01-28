@@ -15,5 +15,5 @@
             android:layout_height="wrap_content" android:text="BUTTON BOTTOM"/>
     <TextView android:background="#aaa" android:gravity="center" android:id="@+id/view_loading"
               android:text="Loading View" android:layout_width="match_parent" android:layout_height="match_parent"
-              android:translationY="50dp"/>
+              android:translationY="0dp"/>
 </RelativeLayout>

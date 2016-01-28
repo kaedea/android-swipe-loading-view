@@ -3,6 +3,7 @@ package widget.kaedea.com.swipeloadingview;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -67,7 +68,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 			@Override
 			public void onTouchOffset(float offsetY) {
 				float targetTranslationY = viewLoading.getTranslationY() + offsetY;
-				swipeRatio = 1f - viewLoading.getTranslationY() / SwipeDetectorLayout.this.getMeasuredHeight();
+				swipeRatio = 1f - viewLoading.getTranslationY() / getTotalHeight();
 				Log.i(TAG, "[onTouchOffset] swipeRatio =" + swipeRatio);
 				Log.i(TAG, "[onTouchOffset] offsetY =" + offsetY + " viewLoading.getTranslationY() = " + viewLoading.getTranslationY() + " targetTranslationY=" + targetTranslationY);
 				if (offsetY<0f && targetTranslationY<0f) {
@@ -80,10 +81,26 @@ public class SwipeDetectorLayout extends RelativeLayout {
 			@Override
 			public void onTouchFinished() {
 				if (viewLoading.getTranslationY()>SwipeDetectorLayout.this.getMeasuredHeight()){
-					ViewCompat.setTranslationY(viewLoading, SwipeDetectorLayout.this.getMeasuredHeight());
+					ViewCompat.setTranslationY(viewLoading, getTotalHeight());
 				}
 			}
 		};
+	}
+
+	public void resetLoadingView(boolean isShowAnimation){
+		if (!isShowAnimation){
+			ViewCompat.setTranslationY(viewLoading, getTotalHeight());
+		}
+	}
+
+	private int getTotalHeight(){
+		return this.getMeasuredHeight();
+	}
+
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		ViewCompat.setTranslationY(viewLoading, getTotalHeight());
 	}
 
 	float y_pre = 0;

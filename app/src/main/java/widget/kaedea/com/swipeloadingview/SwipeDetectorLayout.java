@@ -78,6 +78,8 @@ public class SwipeDetectorLayout extends RelativeLayout {
 					return;
 				}
 				ViewCompat.setTranslationY(mLoadingView, targetTranslationY);
+				// Notify swipe event's progress.
+				LogUtil.d(TAG, "[onTouchOffset] Notify swipe event's progress.");
 				if (mOnSwipeListener !=null)
 					mOnSwipeListener.onSwipping(mSwipeRatio);
 			}
@@ -149,12 +151,6 @@ public class SwipeDetectorLayout extends RelativeLayout {
 		return this.getMeasuredHeight();
 	}
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		// Hide the loading view in the very beginning.
-		hideLoadingView(false);
-	}
 
 	float y_pre = 0;
 	float y_down = 0;
@@ -201,6 +197,8 @@ public class SwipeDetectorLayout extends RelativeLayout {
 
 	public void setLoadingView(View loadingView) {
 		this.mLoadingView = loadingView;
+		// Hide the loading view in the very beginning.
+		hideLoadingView(false);
 	}
 
 	public void setOnSwipeListener(OnSwipeListener onSwipeListener) {

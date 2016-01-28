@@ -59,7 +59,7 @@ public class SwipeDetectorLayout extends RelativeLayout {
 	private void init() {
 		isIntercept.set(false);
 		iTouchEventProxy = new ITouchEventProxy() {
-			int threshold = 50;
+			int threshold = 100;
 
 			@Override
 			public int getThreshold() {
@@ -157,7 +157,6 @@ public class SwipeDetectorLayout extends RelativeLayout {
 	}
 
 	float y_pre = 0;
-
 	float y_down = 0;
 	boolean isBeginSwipe = false;
 	@Override
@@ -187,8 +186,10 @@ public class SwipeDetectorLayout extends RelativeLayout {
 				logEventInfo("ACTION_OTHERS", event);
 				y_down = 0;
 				y_pre = 0;
-				isBeginSwipe = false;
-				iTouchEventProxy.onTouchFinished();
+				if (isBeginSwipe){
+					iTouchEventProxy.onTouchFinished();
+					isBeginSwipe = false;
+				}
 				break;
 		}
 		return isIntercept.get() || super.onTouchEvent(event);

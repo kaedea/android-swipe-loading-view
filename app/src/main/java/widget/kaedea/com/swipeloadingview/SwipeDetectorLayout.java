@@ -51,14 +51,16 @@ public class SwipeDetectorLayout extends RelativeLayout{
 	private void init(){
 		isIntercept.set(true); // 拦截TouchEvent
 		iTouchEventProxy = new ITouchEventProxy() {
+			int threshold = 50;
 			@Override
 			public int getThreshold() {
-				return 50;
+				Log.i(TAG, "[getThreshold] threshold =" + threshold);
+				return threshold;
 			}
 
 			@Override
 			public void onTouchOffset(float offsetY) {
-				Log.e(TAG, "[onTouchOffset] offsetY =" + offsetY);
+				Log.i(TAG, "[onTouchOffset] offsetY =" + offsetY);
 			}
 		};
 	}
@@ -89,7 +91,7 @@ public class SwipeDetectorLayout extends RelativeLayout{
 				y_pre = event.getY();
 				break;
 			default:
-				Log.e(TAG, "Action = " + event.getAction());
+				Log.i(TAG, "Action = " + event.getAction());
 				logEventInfo("ACTION_OTHERS", event);
 				y_down = 0;
 				y_pre = 0;

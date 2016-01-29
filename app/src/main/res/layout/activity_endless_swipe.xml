@@ -12,8 +12,9 @@
                 android:layout_height="match_parent">
         </widget.kaedea.com.swipeloadingview.EndlessSwipeDetectorView>
 
-        <TextView android:textSize="18sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEXT TOP"/>
-        <TextView android:textSize="18sp" android:layout_alignParentBottom="true" android:layout_width="wrap_content"
+        <TextView android:layout_centerHorizontal="true" android:textSize="18sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEXT TOP"/>
+        <TextView android:id="@+id/tv_index" android:layout_centerHorizontal="true" android:layout_centerVertical="true" android:textSize="30sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0"/>
+        <TextView android:layout_centerHorizontal="true" android:textSize="18sp" android:layout_alignParentBottom="true" android:layout_width="wrap_content"
                   android:layout_height="wrap_content" android:text="TEXT BOTTOM"/>
 
 
@@ -23,7 +24,6 @@
                       android:orientation="vertical">
                 <ProgressBar android:layout_width="50dp" android:layout_height="50dp"/>
                 <TextView android:textSize="18sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Loading View"/>
-                <TextView android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="(tap to hide)"/>
         </LinearLayout>
 
 </RelativeLayout>

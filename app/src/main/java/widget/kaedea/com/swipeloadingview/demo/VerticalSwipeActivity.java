@@ -3,13 +3,12 @@ package widget.kaedea.com.swipeloadingview.demo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 import widget.kaedea.com.swipeloadingview.EndlessSwipeDetectorView;
 import widget.kaedea.com.swipeloadingview.R;
 
-public class EndlessSwipeActivity extends AppCompatActivity {
+public class VerticalSwipeActivity extends AppCompatActivity {
 
-	int mIndex = 0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -17,8 +16,6 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 
 		final EndlessSwipeDetectorView swipeDetectorLayout = (EndlessSwipeDetectorView) this.findViewById(R.id.swipe_loading);
 		View loadingView = this.findViewById(R.id.view_loading);
-		final TextView tvIndex = (TextView) this.findViewById(R.id.tv_index);
-		tvIndex.setText(String.valueOf(mIndex));
 		swipeDetectorLayout.setLoadingView(loadingView);
 		swipeDetectorLayout.setOnSwipeListener(new EndlessSwipeDetectorView.OnSwipeListener() {
 			@Override
@@ -27,14 +24,13 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 
 			@Override
 			public void onSwipeFinished() {
-				// Toast.makeText(EndlessSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_LONG).show();
-				tvIndex.setText(String.valueOf(++mIndex));
+				Toast.makeText(VerticalSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_LONG).show();
 				swipeDetectorLayout.hideLoadingView(false, EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_UNKNOW,null);
 			}
 
 			@Override
 			public void onSwipeCanceled() {
-				// Toast.makeText(EndlessSwipeActivity.this, "onSwipeCanceled", Toast.LENGTH_LONG).show();
+				Toast.makeText(VerticalSwipeActivity.this, "onSwipeCanceled", Toast.LENGTH_LONG).show();
 			}
 		});
 		loadingView.setOnClickListener(new View.OnClickListener() {

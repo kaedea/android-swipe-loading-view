@@ -1,9 +1,11 @@
-package widget.kaedea.com.swipeloadingview;
+package widget.kaedea.com.swipeloadingview.demo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+import widget.kaedea.com.swipeloadingview.R;
+import widget.kaedea.com.swipeloadingview.SwipeDetectorLayout;
 
 public class MainActivity extends AppCompatActivity {
 

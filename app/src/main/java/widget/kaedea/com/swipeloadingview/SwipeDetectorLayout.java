@@ -11,10 +11,12 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import widget.kaedea.com.swipeloadingview.util.LogUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ *
  * Created kaede on 1/26/16.
  */
 @SuppressLint("LongLogTag")

@@ -1,4 +1,4 @@
-package widget.kaedea.com.swipeloadingview;
+package widget.kaedea.com.swipeloadingview.util;
 
 import android.util.Log;
 

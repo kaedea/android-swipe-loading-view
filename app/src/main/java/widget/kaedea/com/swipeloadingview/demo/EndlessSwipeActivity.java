@@ -23,7 +23,7 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 		swipeDetectorLayout.setLoadingView(loadingView);
 		swipeDetectorLayout.setOnSwipeListener(new EndlessSwipeDetectorView.OnSwipeListener() {
 			@Override
-			public void onSwipping(float swipeRatio, int direction) {
+			public void onSwiping(float swipeRatio, int direction) {
 			}
 
 			@Override

@@ -107,7 +107,7 @@ public class EndlessSwipeDetectorView extends View {
 				// Notify swipe event's progress.
 				LogUtil.d(TAG, "[onTouchOffset] Notify swipe event's progress.");
 				if (mOnSwipeListener != null)
-					mOnSwipeListener.onSwipping(mSwipeRatio, mDirection);
+					mOnSwipeListener.onSwiping(mSwipeRatio, mDirection);
 			}
 
 			@Override
@@ -390,7 +390,7 @@ public class EndlessSwipeDetectorView extends View {
 
 
 	public interface OnSwipeListener {
-		public void onSwipping(float swipeRatio, int direction);
+		public void onSwiping(float swipeRatio, int direction);
 
 		public void onSwipeFinished(int direction);
 

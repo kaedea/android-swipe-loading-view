@@ -127,16 +127,27 @@ public class EndlessSwipeDetectorView extends View {
 				} else {
 					if (mSwipeRatio <= mSwipeRatioThreshold) {
 						// Can not reach the "Swipe Threshold", therefore taking it as Cancel;
-						hideLoadingView(true,direction);
-						LogUtil.i(TAG, "[onPostTouch] Swipe Cancel");
-						if (mOnSwipeListener != null)
-							mOnSwipeListener.onSwipeCanceled();
+						hideLoadingView(true, direction, new SwipeAnimatorListener() {
+
+							@Override
+							public void onAnimationEnd(Animator animation) {
+								LogUtil.i(TAG, "[onPostTouch] Swipe Cancel");
+								if (mOnSwipeListener != null)
+									mOnSwipeListener.onSwipeCanceled();
+							}
+						});
+
 					} else {
 						// Reach the "Swipe Threshold", therefore taking it as Finish;
-						showLoadingView(true);
-						LogUtil.i(TAG, "[onPostTouch] Swipe Finish");
-						if (mOnSwipeListener != null)
-							mOnSwipeListener.onSwipeFinished();
+						showLoadingView(true, direction, new SwipeAnimatorListener() {
+							@Override
+							public void onAnimationEnd(Animator animation) {
+								LogUtil.i(TAG, "[onPostTouch] Swipe Finish");
+								if (mOnSwipeListener != null)
+									mOnSwipeListener.onSwipeFinished();
+							}
+						});
+
 					}
 				}
 			}
@@ -153,68 +164,104 @@ public class EndlessSwipeDetectorView extends View {
 	}
 
 	private void setInterceptTouchEvent(boolean isConsume) {
-		setClickable(isConsume);
+		setClickable(isConsume); // Pause or resume detect swipe event.
 	}
 
 	private boolean isConsumeTouchEvent() {
 		return isClickable();
 	}
 
-	public void hideLoadingView(boolean isShowAnimation, int direction) {
+	public void hideLoadingView(boolean isShowAnimation, int direction, SwipeAnimatorListener listener) {
 		if (mLoadingView == null) {
 			LogUtil.w(TAG, "[hideLoadingView] mLoadingView is null");
 			return;
 		}
+
 		LogUtil.d(TAG, "[hideLoadingView] isShowAnimation = " + isShowAnimation + " direction= " + direction);
+
 		if (direction == EndlessSwipeConstants.SWIPE_UNKNOW) {
+			setInterceptTouchEvent(false);
+			if (listener != null) listener.onAnimationStart(null);
 			resetLoadingViewPosition(MODE_BOTTOM);
+			if (listener != null) listener.onAnimationEnd(null);
+			setInterceptTouchEvent(true);
+			return;
 		}
 
 		float targetTranslateY;
 		if (direction == EndlessSwipeConstants.SWIPE_TO_UP) {
 			if (!isShowAnimation) {
+				setInterceptTouchEvent(false);
+				if (listener != null) listener.onAnimationStart(null);
 				resetLoadingViewPosition(MODE_BOTTOM);
+				if (listener != null) listener.onAnimationEnd(null);
+				setInterceptTouchEvent(true);
 				return;
 			}
 			targetTranslateY = getTotalHeight();
-		}else {
+		} else {
 			if (!isShowAnimation) {
+				setInterceptTouchEvent(false);
+				if (listener != null) listener.onAnimationStart(null);
 				resetLoadingViewPosition(MODE_ABOVE);
+				if (listener != null) listener.onAnimationEnd(null);
+				setInterceptTouchEvent(true);
 				return;
 			}
 			targetTranslateY = -getTotalHeight();
 		}
+		// Execute animation job.
 		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), targetTranslateY);
 		objectAnimator.setDuration(500);
-		objectAnimator.addListener(new AnimatorEndListener() {
+		objectAnimator.addListener(new SwipeAnimatorListener() {
+
+			@Override
+			public void onAnimationStart(Animator animation) {
+				setInterceptTouchEvent(false);
+			}
+
 			@Override
 			public void onAnimationEnd(Animator animation) {
-				setInterceptTouchEvent(true); // Intercept TouchEvent, or we can not get the Action_Move event.
+				setInterceptTouchEvent(true);
 			}
 		});
+		if (listener != null) objectAnimator.addListener(listener);
 		objectAnimator.start();
-
 	}
 
-	public void showLoadingView(boolean isShowAnimation) {
+	public void showLoadingView(boolean isShowAnimation, int direction, SwipeAnimatorListener listener) {
 		if (mLoadingView == null) {
 			LogUtil.w(TAG, "[showLoadingView] mLoadingView is null");
 			return;
 		}
-		LogUtil.d(TAG, "[showLoadingView] isShowAnimation = " + isShowAnimation);
-		if (!isShowAnimation) {
-			ViewCompat.setTranslationY(mLoadingView, 0f);
+
+		LogUtil.d(TAG, "[showLoadingView] isShowAnimation = " + isShowAnimation + " direction= " + direction);
+
+		if (direction == EndlessSwipeConstants.SWIPE_UNKNOW) {
 			setInterceptTouchEvent(false);
+			if (listener != null) listener.onAnimationStart(null);
+			resetLoadingViewPosition(MODE_CENTER);
+			if (listener != null) listener.onAnimationEnd(null);
+		}
+
+		if (!isShowAnimation) {
+			setInterceptTouchEvent(false);
+			if (listener != null) listener.onAnimationStart(null);
+			resetLoadingViewPosition(MODE_CENTER);
+			if (listener != null) listener.onAnimationEnd(null);
 			return;
 		}
+		// Execute animation job.
 		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), 0f);
 		objectAnimator.setDuration(500);
-		objectAnimator.addListener(new AnimatorEndListener() {
+		objectAnimator.addListener(new SwipeAnimatorListener() {
+
 			@Override
-			public void onAnimationEnd(Animator animation) {
+			public void onAnimationStart(Animator animation) {
 				setInterceptTouchEvent(false);
 			}
 		});
+		if (listener != null) objectAnimator.addListener(listener);
 		objectAnimator.start();
 	}
 
@@ -249,7 +296,7 @@ public class EndlessSwipeDetectorView extends View {
 		super.onDraw(canvas);
 		// Hide the loading view in the very beginning.
 		if (!isCreated.get()) {
-			hideLoadingView(false,EndlessSwipeConstants.SWIPE_UNKNOW);
+			hideLoadingView(false, EndlessSwipeConstants.SWIPE_UNKNOW, null);
 			isCreated.set(true);
 		}
 
@@ -321,6 +368,9 @@ public class EndlessSwipeDetectorView extends View {
 		this.mOnSwipeListener = onSwipeListener;
 	}
 
+	public int getDirection() {
+		return mDirection;
+	}
 
 	public interface ITouchEventProxy {
 		public int getThreshold();

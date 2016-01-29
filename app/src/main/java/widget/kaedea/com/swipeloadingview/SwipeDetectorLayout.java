@@ -128,7 +128,7 @@ public class SwipeDetectorLayout extends View {
 		}
 		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), getTotalHeight());
 		objectAnimator.setDuration(500);
-		objectAnimator.addListener(new AnimatorEndListener() {
+		objectAnimator.addListener(new SwipeAnimatorListener() {
 			@Override
 			public void onAnimationEnd(Animator animation) {
 				setInterceptTouchEvent(true); // Intercept TouchEvent, or we can not get the Action_Move event.
@@ -151,7 +151,7 @@ public class SwipeDetectorLayout extends View {
 		}
 		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), 0f);
 		objectAnimator.setDuration(500);
-		objectAnimator.addListener(new AnimatorEndListener() {
+		objectAnimator.addListener(new SwipeAnimatorListener() {
 			@Override
 			public void onAnimationEnd(Animator animation) {
 				setInterceptTouchEvent(false);

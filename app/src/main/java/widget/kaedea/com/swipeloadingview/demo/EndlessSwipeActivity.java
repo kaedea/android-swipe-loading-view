@@ -26,6 +26,7 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 			@Override
 			public void onSwipeFinished() {
 				Toast.makeText(EndlessSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_LONG).show();
+				swipeDetectorLayout.hideLoadingView(false, EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_UNKNOW,null);
 			}
 
 			@Override
@@ -36,7 +37,7 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 		loadingView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				swipeDetectorLayout.hideLoadingView(true, EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_TO_UP);
+				swipeDetectorLayout.hideLoadingView(true, swipeDetectorLayout.getDirection(),null);
 			}
 		});
 	}

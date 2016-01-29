@@ -23,13 +23,13 @@ public class VerticalSwipeActivity extends AppCompatActivity {
 			}
 
 			@Override
-			public void onSwipeFinished() {
+			public void onSwipeFinished(int direction) {
 				Toast.makeText(VerticalSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_LONG).show();
 				swipeDetectorLayout.hideLoadingView(false, EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_UNKNOW,null);
 			}
 
 			@Override
-			public void onSwipeCanceled() {
+			public void onSwipeCanceled(int direction) {
 				Toast.makeText(VerticalSwipeActivity.this, "onSwipeCanceled", Toast.LENGTH_LONG).show();
 			}
 		});

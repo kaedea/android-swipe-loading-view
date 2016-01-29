@@ -10,6 +10,7 @@ import widget.kaedea.com.swipeloadingview.R;
 public class EndlessSwipeActivity extends AppCompatActivity {
 
 	int mIndex = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -26,21 +27,23 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 			}
 
 			@Override
-			public void onSwipeFinished() {
+			public void onSwipeFinished(int direction) {
 				// Toast.makeText(EndlessSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_LONG).show();
-				tvIndex.setText(String.valueOf(++mIndex));
-				swipeDetectorLayout.hideLoadingView(false, EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_UNKNOW,null);
+				if (direction == EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_TO_UP) mIndex++;
+				else if (direction == EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_TO_DOWN) mIndex--;
+				tvIndex.setText(String.valueOf(mIndex));
+				swipeDetectorLayout.hideLoadingView(false, EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_UNKNOW, null);
 			}
 
 			@Override
-			public void onSwipeCanceled() {
+			public void onSwipeCanceled(int direction) {
 				// Toast.makeText(EndlessSwipeActivity.this, "onSwipeCanceled", Toast.LENGTH_LONG).show();
 			}
 		});
 		loadingView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				swipeDetectorLayout.hideLoadingView(true, swipeDetectorLayout.getDirection(),null);
+				swipeDetectorLayout.hideLoadingView(true, swipeDetectorLayout.getDirection(), null);
 			}
 		});
 	}

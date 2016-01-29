@@ -117,13 +117,13 @@ public class EndlessSwipeDetectorView extends View {
 					LogUtil.i(TAG, "[onPostTouch] below the bottom end");
 					resetLoadingViewPosition(MODE_BOTTOM);
 					if (mOnSwipeListener != null)
-						mOnSwipeListener.onSwipeCanceled();
+						mOnSwipeListener.onSwipeCanceled(mDirection);
 				} else if (mLoadingView.getTranslationY() < -getTotalHeight()) {
 					// above the top end
 					LogUtil.i(TAG, "[onPostTouch] above the top end");
 					resetLoadingViewPosition(MODE_ABOVE);
 					if (mOnSwipeListener != null)
-						mOnSwipeListener.onSwipeCanceled();
+						mOnSwipeListener.onSwipeCanceled(mDirection);
 				} else {
 					if (mSwipeRatio <= mSwipeRatioThreshold) {
 						// Can not reach the "Swipe Threshold", therefore taking it as Cancel;
@@ -133,7 +133,7 @@ public class EndlessSwipeDetectorView extends View {
 							public void onAnimationEnd(Animator animation) {
 								LogUtil.i(TAG, "[onPostTouch] Swipe Cancel");
 								if (mOnSwipeListener != null)
-									mOnSwipeListener.onSwipeCanceled();
+									mOnSwipeListener.onSwipeCanceled(mDirection);
 							}
 						});
 
@@ -144,7 +144,7 @@ public class EndlessSwipeDetectorView extends View {
 							public void onAnimationEnd(Animator animation) {
 								LogUtil.i(TAG, "[onPostTouch] Swipe Finish");
 								if (mOnSwipeListener != null)
-									mOnSwipeListener.onSwipeFinished();
+									mOnSwipeListener.onSwipeFinished(mDirection);
 							}
 						});
 
@@ -392,8 +392,8 @@ public class EndlessSwipeDetectorView extends View {
 	public interface OnSwipeListener {
 		public void onSwipping(float swipeRatio, int direction);
 
-		public void onSwipeFinished();
+		public void onSwipeFinished(int direction);
 
-		public void onSwipeCanceled();
+		public void onSwipeCanceled(int direction);
 	}
 }

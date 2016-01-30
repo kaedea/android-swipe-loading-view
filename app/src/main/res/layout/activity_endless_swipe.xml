@@ -3,14 +3,14 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context=".demo.SimpleSwipeActivity">
+                tools:context="com.kaedea.widget.swipeloadingviewdemo.SimpleSwipeActivity">
 
-        <widget.kaedea.com.swipeloadingview.SwipeDetectorView
+        <com.kaedea.widget.swipeloadingview.SwipeDetectorView
                 android:id="@+id/swipe_loading"
                 android:background="#ddd"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-        </widget.kaedea.com.swipeloadingview.SwipeDetectorView>
+        </com.kaedea.widget.swipeloadingview.SwipeDetectorView>
 
         <TextView android:layout_centerHorizontal="true" android:textSize="18sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEXT TOP"/>
         <TextView android:id="@+id/tv_index" android:layout_centerHorizontal="true" android:layout_centerVertical="true" android:textSize="30sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0"/>

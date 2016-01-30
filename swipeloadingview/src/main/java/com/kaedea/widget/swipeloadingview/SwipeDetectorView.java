@@ -1,4 +1,4 @@
-package widget.kaedea.com.swipeloadingview;
+package com.kaedea.widget.swipeloadingview;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -10,7 +10,7 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import widget.kaedea.com.swipeloadingview.util.LogUtil;
+import com.kaedea.widget.swipeloadingview.util.LogUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

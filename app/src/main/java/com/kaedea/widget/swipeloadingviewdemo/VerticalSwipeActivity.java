@@ -1,12 +1,11 @@
-package widget.kaedea.com.swipeloadingview.demo;
+package com.kaedea.widget.swipeloadingviewdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
-import widget.kaedea.com.swipeloadingview.SwipeDetectorView;
-import widget.kaedea.com.swipeloadingview.OnSwipeListener;
-import widget.kaedea.com.swipeloadingview.R;
+import com.kaedea.widget.swipeloadingview.SwipeDetectorView;
+import com.kaedea.widget.swipeloadingview.OnSwipeListener;
 
 public class VerticalSwipeActivity extends AppCompatActivity {
 

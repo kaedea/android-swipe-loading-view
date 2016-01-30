@@ -1,4 +1,4 @@
-package widget.kaedea.com.swipeloadingview;
+package com.kaedea.widget.swipeloadingview;
 
 import android.animation.Animator;
 

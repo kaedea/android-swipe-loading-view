@@ -1,4 +1,4 @@
-package widget.kaedea.com.swipeloadingview;
+package com.kaedea.widget.swipeloadingview;
 
 /**
  * Created by kaede on 2016/1/30.

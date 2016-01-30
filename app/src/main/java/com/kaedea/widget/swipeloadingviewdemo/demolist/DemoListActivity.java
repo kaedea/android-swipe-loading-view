@@ -11,11 +11,10 @@ import com.kaedea.widget.swipeloadingviewdemo.demolist.presenter.HomePresenterCo
 import com.kaedea.widget.swipeloadingviewdemo.demolist.presenter.IHomePresenter;
 import com.kaedea.widget.swipeloadingviewdemo.demolist.view.IHomeView;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class DemoListActivity extends ActionBarActivity implements AdapterView.OnItemClickListener,IHomeView {
+public class DemoListActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, IHomeView {
 
 	private ListView listView;
 	private IHomePresenter homePresenter;
@@ -42,7 +41,7 @@ public class DemoListActivity extends ActionBarActivity implements AdapterView.O
 		listView.setEmptyView(loadingView);
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, datas);
 		listView.setAdapter(adapter);
-		homePresenter = new HomePresenterCompl(this,this);
+		homePresenter = new HomePresenterCompl(this, this);
 	}
 
 	@Override
@@ -58,7 +57,7 @@ public class DemoListActivity extends ActionBarActivity implements AdapterView.O
 
 	@Override
 	public void onGetDataList(List<String> datas) {
-		if (datas!=null&&datas.size()>0){
+		if (datas != null && datas.size() > 0) {
 			this.datas.clear();
 			this.datas.addAll(datas);
 			adapter.notifyDataSetChanged();

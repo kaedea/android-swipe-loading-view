@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-import com.kaedea.widget.swipeloadingview.SwipeDetectorView;
 import com.kaedea.widget.swipeloadingview.OnSwipeListener;
 import com.kaedea.widget.swipeloadingview.SwipeConstants;
+import com.kaedea.widget.swipeloadingview.SwipeDetectorView;
 
 public class EndlessSwipeActivity extends AppCompatActivity {
 

@@ -46,5 +46,7 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 				swipeDetectorLayout.hideLoadingView(true, swipeDetectorLayout.getDirection(), null);
 			}
 		});
+
+		// swipeDetectorLayout.setAnimationDuration(10000);
 	}
 }

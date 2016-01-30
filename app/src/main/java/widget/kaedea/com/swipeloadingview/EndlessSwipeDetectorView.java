@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class EndlessSwipeDetectorView extends View {
 	public static final String TAG = "SwipeDetectorLayout";
+
 	public static final int MODE_ABOVE = 0;
 	public static final int MODE_CENTER = 1;
 	public static final int MODE_BOTTOM = 2;
@@ -30,6 +31,7 @@ public class EndlessSwipeDetectorView extends View {
 	View mLoadingView;
 	float mSwipeRatio;
 	private float mSwipeRatioThreshold;
+	private int mDuration = 500;
 
 	public EndlessSwipeDetectorView(Context context) {
 		super(context);
@@ -212,7 +214,7 @@ public class EndlessSwipeDetectorView extends View {
 		}
 		// Execute animation job.
 		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), targetTranslateY);
-		objectAnimator.setDuration(500);
+		objectAnimator.setDuration(mDuration);
 		objectAnimator.addListener(new SwipeAnimatorListener() {
 
 			@Override
@@ -253,7 +255,7 @@ public class EndlessSwipeDetectorView extends View {
 		}
 		// Execute animation job.
 		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), 0f);
-		objectAnimator.setDuration(500);
+		objectAnimator.setDuration(mDuration);
 		objectAnimator.addListener(new SwipeAnimatorListener() {
 
 			@Override
@@ -370,6 +372,10 @@ public class EndlessSwipeDetectorView extends View {
 
 	public int getDirection() {
 		return mDirection;
+	}
+
+	public void setAnimationDuration(int mDuration) {
+		this.mDuration = mDuration;
 	}
 
 	public interface ITouchEventProxy {

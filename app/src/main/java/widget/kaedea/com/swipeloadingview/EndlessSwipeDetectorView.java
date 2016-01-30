@@ -263,9 +263,6 @@ public class EndlessSwipeDetectorView extends View {
 		objectAnimator.start();
 	}
 
-	private void hideLoadingView() {
-		mLoadingView.setVisibility(View.INVISIBLE);
-	}
 
 	private void resetLoadingViewPosition(int mode) {
 		if (mLoadingView == null) {
@@ -299,11 +296,6 @@ public class EndlessSwipeDetectorView extends View {
 		}
 
 	}
-
-	/*@Override
-	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		return isIntercept.get() || super.onInterceptTouchEvent(ev);
-	}*/
 
 	float y_pre = 0;
 	float y_down = 0;

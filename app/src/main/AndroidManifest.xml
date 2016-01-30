@@ -11,6 +11,9 @@
         <activity android:name=".demo.MainActivity" android:label="Swipe Loading">
         </activity>
         <activity android:name=".demo.EndlessSwipeActivity" android:label="Endless Swipe">
+        </activity>
+
+        <activity android:name=".demo.VerticalSwipeActivity" android:label="Vertical Swipe">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

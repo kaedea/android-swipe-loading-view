@@ -27,7 +27,6 @@ public class VerticalSwipeActivity extends AppCompatActivity {
 			@Override
 			public void onSwipeFinished(int direction) {
 				Toast.makeText(VerticalSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_LONG).show();
-				swipeDetectorLayout.hideLoadingView(false, SwipeConstants.SWIPE_UNKNOWN,null);
 			}
 
 			@Override

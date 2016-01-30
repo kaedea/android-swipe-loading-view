@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created kaede on 1/26/16.
  */
-public class EndlessSwipeDetectorView extends View {
+public class SwipeDetectorView extends View {
 	public static final String TAG = "SwipeDetectorLayout";
 
 	ITouchEventProxy iTouchEventProxy;
@@ -27,25 +27,26 @@ public class EndlessSwipeDetectorView extends View {
 	View mLoadingView;
 	float mSwipeRatio;
 	private float mSwipeRatioThreshold;
-	private int mDuration = 500;
+	private int mDuration = SwipeConstants.DEFAULT_DURATION;
+	private int mWorkingMode = SwipeConstants.DEFAULT_WORKING_MODE;
 
-	public EndlessSwipeDetectorView(Context context) {
+	public SwipeDetectorView(Context context) {
 		super(context);
 		init();
 	}
 
-	public EndlessSwipeDetectorView(Context context, AttributeSet attrs) {
+	public SwipeDetectorView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
 
-	public EndlessSwipeDetectorView(Context context, AttributeSet attrs, int defStyleAttr) {
+	public SwipeDetectorView(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
 		init();
 	}
 
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	public EndlessSwipeDetectorView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+	public SwipeDetectorView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
 		super(context, attrs, defStyleAttr, defStyleRes);
 		init();
 	}
@@ -68,9 +69,9 @@ public class EndlessSwipeDetectorView extends View {
 				// start swipe
 				LogUtil.i(TAG, "[onPreTouch] start swipe, direction = " + direction);
 				if (direction == SwipeConstants.SWIPE_TO_UP) {
-					resetLoadingViewPosition(SwipeConstants.MODE_BOTTOM);
+					resetLoadingViewPosition(SwipeConstants.POSITION_BOTTOM);
 				} else {
-					resetLoadingViewPosition(SwipeConstants.MODE_ABOVE);
+					resetLoadingViewPosition(SwipeConstants.POSITION_ABOVE);
 				}
 			}
 
@@ -85,7 +86,7 @@ public class EndlessSwipeDetectorView extends View {
 					if (offsetY < 0f && targetTranslationY < 0f) {
 						// can not continue swipe up
 						LogUtil.i(TAG, "[onTouchOffset] can not continue swipe up!");
-						resetLoadingViewPosition(SwipeConstants.MODE_CENTER);
+						resetLoadingViewPosition(SwipeConstants.POSITION_CENTER);
 						return;
 					}
 				} else {
@@ -97,7 +98,7 @@ public class EndlessSwipeDetectorView extends View {
 					if (offsetY > 0f && targetTranslationY > getTotalHeight()) {
 						// can not continue swipe down
 						LogUtil.i(TAG, "[onTouchOffset] can not continue swipe down!");
-						resetLoadingViewPosition(SwipeConstants.MODE_CENTER);
+						resetLoadingViewPosition(SwipeConstants.POSITION_CENTER);
 						return;
 					}
 				}
@@ -113,13 +114,13 @@ public class EndlessSwipeDetectorView extends View {
 				if (mLoadingView.getTranslationY() > getTotalHeight()) {
 					// below the bottom end
 					LogUtil.i(TAG, "[onPostTouch] below the bottom end");
-					resetLoadingViewPosition(SwipeConstants.MODE_BOTTOM);
+					resetLoadingViewPosition(SwipeConstants.POSITION_BOTTOM);
 					if (mOnSwipeListener != null)
 						mOnSwipeListener.onSwipeCanceled(mDirection);
 				} else if (mLoadingView.getTranslationY() < -getTotalHeight()) {
 					// above the top end
 					LogUtil.i(TAG, "[onPostTouch] above the top end");
-					resetLoadingViewPosition(SwipeConstants.MODE_ABOVE);
+					resetLoadingViewPosition(SwipeConstants.POSITION_ABOVE);
 					if (mOnSwipeListener != null)
 						mOnSwipeListener.onSwipeCanceled(mDirection);
 				} else {
@@ -180,7 +181,7 @@ public class EndlessSwipeDetectorView extends View {
 		if (direction == SwipeConstants.SWIPE_UNKNOWN) {
 			setInterceptTouchEvent(false);
 			if (listener != null) listener.onAnimationStart(null);
-			resetLoadingViewPosition(SwipeConstants.MODE_BOTTOM);
+			resetLoadingViewPosition(SwipeConstants.POSITION_BOTTOM);
 			if (listener != null) listener.onAnimationEnd(null);
 			setInterceptTouchEvent(true);
 			return;
@@ -191,7 +192,7 @@ public class EndlessSwipeDetectorView extends View {
 			if (!isShowAnimation) {
 				setInterceptTouchEvent(false);
 				if (listener != null) listener.onAnimationStart(null);
-				resetLoadingViewPosition(SwipeConstants.MODE_BOTTOM);
+				resetLoadingViewPosition(SwipeConstants.POSITION_BOTTOM);
 				if (listener != null) listener.onAnimationEnd(null);
 				setInterceptTouchEvent(true);
 				return;
@@ -201,7 +202,7 @@ public class EndlessSwipeDetectorView extends View {
 			if (!isShowAnimation) {
 				setInterceptTouchEvent(false);
 				if (listener != null) listener.onAnimationStart(null);
-				resetLoadingViewPosition(SwipeConstants.MODE_ABOVE);
+				resetLoadingViewPosition(SwipeConstants.POSITION_ABOVE);
 				if (listener != null) listener.onAnimationEnd(null);
 				setInterceptTouchEvent(true);
 				return;
@@ -238,14 +239,14 @@ public class EndlessSwipeDetectorView extends View {
 		if (direction == SwipeConstants.SWIPE_UNKNOWN) {
 			setInterceptTouchEvent(false);
 			if (listener != null) listener.onAnimationStart(null);
-			resetLoadingViewPosition(SwipeConstants.MODE_CENTER);
+			resetLoadingViewPosition(SwipeConstants.POSITION_CENTER);
 			if (listener != null) listener.onAnimationEnd(null);
 		}
 
 		if (!isShowAnimation) {
 			setInterceptTouchEvent(false);
 			if (listener != null) listener.onAnimationStart(null);
-			resetLoadingViewPosition(SwipeConstants.MODE_CENTER);
+			resetLoadingViewPosition(SwipeConstants.POSITION_CENTER);
 			if (listener != null) listener.onAnimationEnd(null);
 			return;
 		}
@@ -270,13 +271,13 @@ public class EndlessSwipeDetectorView extends View {
 			return;
 		}
 		switch (mode) {
-			case SwipeConstants.MODE_ABOVE:
+			case SwipeConstants.POSITION_ABOVE:
 				ViewCompat.setTranslationY(mLoadingView, -getTotalHeight());
 				break;
-			case SwipeConstants.MODE_CENTER:
+			case SwipeConstants.POSITION_CENTER:
 				ViewCompat.setTranslationY(mLoadingView, 0f);
 				break;
-			case SwipeConstants.MODE_BOTTOM:
+			case SwipeConstants.POSITION_BOTTOM:
 				ViewCompat.setTranslationY(mLoadingView, getTotalHeight());
 				break;
 		}
@@ -319,16 +320,36 @@ public class EndlessSwipeDetectorView extends View {
 				if (isBeginSwipe) {
 					iTouchEventProxy.onTouchOffset(event.getY() - y_pre, mDirection);
 				} else if (Math.abs(event.getY() - y_down) >= iTouchEventProxy.getThreshold()) {
-					if (event.getY() <= y_down) {
-						// down to up
-						mDirection = SwipeConstants.SWIPE_TO_UP;
+
+					// Start swipe job.
+					if (mWorkingMode == SwipeConstants.MODE_VERTICAL) {
+						if (event.getY() <= y_down) {
+							// down to up
+							mDirection = SwipeConstants.SWIPE_TO_UP;
+						} else {
+							// up to down
+							mDirection = SwipeConstants.SWIPE_TO_DOWN;
+						}
+						iTouchEventProxy.onPreTouch(mDirection);
+						isBeginSwipe = true;
+						iTouchEventProxy.onTouchOffset(event.getY() - y_pre, mDirection);
+					} else if (mWorkingMode == SwipeConstants.MODE_BOTTOM) {
+						if (event.getY() <= y_down) {
+							mDirection = SwipeConstants.SWIPE_TO_UP;
+							iTouchEventProxy.onPreTouch(mDirection);
+							isBeginSwipe = true;
+							iTouchEventProxy.onTouchOffset(event.getY() - y_pre, mDirection);
+						}
+
 					} else {
-						// up to down
-						mDirection = SwipeConstants.SWIPE_TO_DOWN;
+						if (event.getY() > y_down) {
+							mDirection = SwipeConstants.SWIPE_TO_DOWN;
+							iTouchEventProxy.onPreTouch(mDirection);
+							isBeginSwipe = true;
+							iTouchEventProxy.onTouchOffset(event.getY() - y_pre, mDirection);
+						}
+
 					}
-					iTouchEventProxy.onPreTouch(mDirection);
-					isBeginSwipe = true;
-					iTouchEventProxy.onTouchOffset(event.getY() - y_pre, mDirection);
 				}
 				y_pre = event.getY();
 				break;
@@ -362,8 +383,13 @@ public class EndlessSwipeDetectorView extends View {
 		return mDirection;
 	}
 
-	public void setAnimationDuration(int mDuration) {
-		this.mDuration = mDuration;
+	public void setAnimationDuration(int duration) {
+		this.mDuration = duration;
+	}
+
+	public void setWorkingMode(int workingMode) {
+		this.mWorkingMode = workingMode;
+		// Dude!!!!!
 	}
 
 	public interface ITouchEventProxy {

@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-import widget.kaedea.com.swipeloadingview.EndlessSwipeDetectorView;
+import widget.kaedea.com.swipeloadingview.SwipeDetectorView;
 import widget.kaedea.com.swipeloadingview.OnSwipeListener;
 import widget.kaedea.com.swipeloadingview.R;
 import widget.kaedea.com.swipeloadingview.SwipeConstants;
@@ -18,7 +18,7 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_endless_swipe);
 
-		final EndlessSwipeDetectorView swipeDetectorLayout = (EndlessSwipeDetectorView) this.findViewById(R.id.swipe_loading);
+		final SwipeDetectorView swipeDetectorLayout = (SwipeDetectorView) this.findViewById(R.id.swipe_loading);
 		View loadingView = this.findViewById(R.id.view_loading);
 		final TextView tvIndex = (TextView) this.findViewById(R.id.tv_index);
 		tvIndex.setText(String.valueOf(mIndex));

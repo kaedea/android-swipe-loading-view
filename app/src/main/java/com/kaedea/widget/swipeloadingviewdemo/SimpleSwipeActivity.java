@@ -18,6 +18,8 @@ public class SimpleSwipeActivity extends AppCompatActivity {
         final SwipeDetectorView swipeDetectorLayout = (SwipeDetectorView) this.findViewById(R.id.swipe_loading);
         View loadingView = this.findViewById(R.id.view_loading);
         swipeDetectorLayout.setLoadingView(loadingView);
+
+        // Add OnSwipeListener.
         swipeDetectorLayout.setOnSwipeListener(new OnSwipeListener() {
             @Override
             public void onSwiping(float swipeRatio, int direction) {
@@ -41,5 +43,9 @@ public class SimpleSwipeActivity extends AppCompatActivity {
         });
 
         swipeDetectorLayout.setWorkingMode(SwipeConstants.MODE_BOTTOM);
+
+        // swipeDetectorLayout.setEnable(false); // Set swipe enable.
     }
+
+
 }

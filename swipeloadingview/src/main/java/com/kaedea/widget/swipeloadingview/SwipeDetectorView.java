@@ -29,6 +29,8 @@ public class SwipeDetectorView extends View {
 	private float mSwipeRatioThreshold;
 	private int mDuration = SwipeConstants.DEFAULT_DURATION;
 	private int mWorkingMode = SwipeConstants.DEFAULT_WORKING_MODE;
+	private boolean mIsIntercept = false;
+	private boolean mIsEnable = true;
 
 	public SwipeDetectorView(Context context) {
 		super(context);
@@ -162,12 +164,14 @@ public class SwipeDetectorView extends View {
 		ViewCompat.setTranslationY(mLoadingView, translate);
 	}
 
-	private void setInterceptTouchEvent(boolean isConsume) {
-		setClickable(isConsume); // Pause or resume detect swipe event.
+	private void setInterceptTouchEvent(boolean isInterceptTouchEvent) {
+		// setClickable(isInterceptTouchEvent); // Pause or resume detect swipe event.
+		mIsIntercept = isInterceptTouchEvent;
 	}
 
 	private boolean isInterceptTouchEvent() {
-		return isClickable();
+		// return isClickable();
+		return mIsIntercept;
 	}
 
 	public void hideLoadingView(boolean isShowAnimation, int direction, SwipeAnimatorListener listener) {
@@ -305,6 +309,7 @@ public class SwipeDetectorView extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		if (!mIsEnable) return super.onTouchEvent(event); // Enable is false.
 		if (iTouchEventProxy == null) return super.onTouchEvent(event);
 
 		switch (event.getAction()) {
@@ -389,7 +394,10 @@ public class SwipeDetectorView extends View {
 
 	public void setWorkingMode(int workingMode) {
 		this.mWorkingMode = workingMode;
-		// Dude!!!!!
+	}
+
+	public void setEnable(boolean isEnable) {
+		mIsEnable = isEnable;
 	}
 
 	public interface ITouchEventProxy {

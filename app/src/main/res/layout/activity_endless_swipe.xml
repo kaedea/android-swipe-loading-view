@@ -13,17 +13,20 @@
         </com.kaedea.widget.swipeloadingview.SwipeDetectorView>
 
         <TextView android:layout_centerHorizontal="true" android:textSize="18sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEXT TOP"/>
-        <TextView android:id="@+id/tv_index" android:layout_centerHorizontal="true" android:layout_centerVertical="true" android:textSize="30sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0"/>
+        <ProgressBar android:visibility="invisible" android:id="@+id/pb_main" android:layout_centerHorizontal="true" android:layout_above="@+id/tv_index" android:layout_width="50dp" android:layout_height="50dp"/>
+        <TextView android:id="@+id/tv_index" android:layout_centerHorizontal="true" android:layout_centerVertical="true" android:textSize="50sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0"/>
         <TextView android:layout_centerHorizontal="true" android:textSize="18sp" android:layout_alignParentBottom="true" android:layout_width="wrap_content"
                   android:layout_height="wrap_content" android:text="TEXT BOTTOM"/>
 
 
         <!-- LoadingView, you can custom it as you like! -->
-        <LinearLayout android:background="#aaaaaa" android:gravity="center" android:id="@+id/view_loading"
+        <LinearLayout tools:visibility="visible" android:background="#aaaaaa" android:gravity="center" android:id="@+id/view_loading"
                       android:layout_width="match_parent" android:layout_height="match_parent"
                       android:orientation="vertical">
-                <ProgressBar android:layout_width="50dp" android:layout_height="50dp"/>
-                <TextView android:textSize="18sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Loading View"/>
+                <LinearLayout tools:background="#999" android:id="@+id/layout_loadingcontent" android:layout_width="wrap_content" android:orientation="vertical" android:layout_height="wrap_content" android:gravity="center">
+                    <ProgressBar android:layout_width="50dp" android:layout_height="50dp"/>
+                    <TextView android:textSize="18sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Loading View"/>
+                </LinearLayout>
         </LinearLayout>
 
 </RelativeLayout>

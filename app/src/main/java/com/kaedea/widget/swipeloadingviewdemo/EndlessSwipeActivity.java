@@ -1,9 +1,11 @@
 package com.kaedea.widget.swipeloadingviewdemo;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.kaedea.widget.swipeloadingview.OnSwipeListener;
 import com.kaedea.widget.swipeloadingview.SwipeConstants;
 import com.kaedea.widget.swipeloadingview.SwipeDetectorView;
@@ -11,11 +13,19 @@ import com.kaedea.widget.swipeloadingview.SwipeDetectorView;
 public class EndlessSwipeActivity extends AppCompatActivity {
 
 	int mIndex = 0;
+	private View pbMain;
+	LoadingTask mLoadingTask;
+	private Handler handler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_endless_swipe);
+
+		pbMain = this.findViewById(R.id.pb_main);
+		handler = new Handler();
+		mLoadingTask = new LoadingTask();
+		this.findViewById(R.id.layout_loadingcontent).setVisibility(View.INVISIBLE);
 
 		final SwipeDetectorView swipeDetectorLayout = (SwipeDetectorView) this.findViewById(R.id.swipe_loading);
 		View loadingView = this.findViewById(R.id.view_loading);
@@ -34,6 +44,11 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 				else if (direction == SwipeConstants.SWIPE_TO_DOWN) mIndex--;
 				tvIndex.setText(String.valueOf(mIndex));
 				swipeDetectorLayout.hideLoadingView(false, SwipeConstants.SWIPE_UNKNOWN, null);
+
+				// do loading job
+				handler.removeCallbacks(mLoadingTask);
+				pbMain.setVisibility(View.VISIBLE);
+				handler.postDelayed(mLoadingTask, 2000);
 			}
 
 			@Override
@@ -49,5 +64,14 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 		});
 
 		// swipeDetectorLayout.setAnimationDuration(10000);
+	}
+
+	public class LoadingTask implements Runnable{
+
+		@Override
+		public void run() {
+			Toast.makeText(EndlessSwipeActivity.this, "Loading Success!", Toast.LENGTH_LONG).show();
+			pbMain.setVisibility(View.INVISIBLE);
+		}
 	}
 }

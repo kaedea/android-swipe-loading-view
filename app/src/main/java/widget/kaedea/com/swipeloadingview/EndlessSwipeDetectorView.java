@@ -20,10 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class EndlessSwipeDetectorView extends View {
 	public static final String TAG = "SwipeDetectorLayout";
 
-	public static final int MODE_ABOVE = 0;
-	public static final int MODE_CENTER = 1;
-	public static final int MODE_BOTTOM = 2;
-
 	ITouchEventProxy iTouchEventProxy;
 	OnSwipeListener mOnSwipeListener;
 
@@ -71,17 +67,17 @@ public class EndlessSwipeDetectorView extends View {
 			public void onPreTouch(int direction) {
 				// start swipe
 				LogUtil.i(TAG, "[onPreTouch] start swipe, direction = " + direction);
-				if (direction == EndlessSwipeConstants.SWIPE_TO_UP) {
-					resetLoadingViewPosition(MODE_BOTTOM);
+				if (direction == SwipeConstants.SWIPE_TO_UP) {
+					resetLoadingViewPosition(SwipeConstants.MODE_BOTTOM);
 				} else {
-					resetLoadingViewPosition(MODE_ABOVE);
+					resetLoadingViewPosition(SwipeConstants.MODE_ABOVE);
 				}
 			}
 
 			@Override
 			public void onTouchOffset(float offsetY, int direction) {
 				float targetTranslationY = mLoadingView.getTranslationY() + offsetY;
-				if (direction == EndlessSwipeConstants.SWIPE_TO_UP) {
+				if (direction == SwipeConstants.SWIPE_TO_UP) {
 					mSwipeRatio = 1f - mLoadingView.getTranslationY() / getTotalHeight();
 					LogUtil.d(TAG, "[onTouchOffset] direction =" + direction);
 					LogUtil.d(TAG, "[onTouchOffset] mSwipeRatio =" + mSwipeRatio);
@@ -89,7 +85,7 @@ public class EndlessSwipeDetectorView extends View {
 					if (offsetY < 0f && targetTranslationY < 0f) {
 						// can not continue swipe up
 						LogUtil.i(TAG, "[onTouchOffset] can not continue swipe up!");
-						resetLoadingViewPosition(MODE_CENTER);
+						resetLoadingViewPosition(SwipeConstants.MODE_CENTER);
 						return;
 					}
 				} else {
@@ -101,7 +97,7 @@ public class EndlessSwipeDetectorView extends View {
 					if (offsetY > 0f && targetTranslationY > getTotalHeight()) {
 						// can not continue swipe down
 						LogUtil.i(TAG, "[onTouchOffset] can not continue swipe down!");
-						resetLoadingViewPosition(MODE_CENTER);
+						resetLoadingViewPosition(SwipeConstants.MODE_CENTER);
 						return;
 					}
 				}
@@ -117,13 +113,13 @@ public class EndlessSwipeDetectorView extends View {
 				if (mLoadingView.getTranslationY() > getTotalHeight()) {
 					// below the bottom end
 					LogUtil.i(TAG, "[onPostTouch] below the bottom end");
-					resetLoadingViewPosition(MODE_BOTTOM);
+					resetLoadingViewPosition(SwipeConstants.MODE_BOTTOM);
 					if (mOnSwipeListener != null)
 						mOnSwipeListener.onSwipeCanceled(mDirection);
 				} else if (mLoadingView.getTranslationY() < -getTotalHeight()) {
 					// above the top end
 					LogUtil.i(TAG, "[onPostTouch] above the top end");
-					resetLoadingViewPosition(MODE_ABOVE);
+					resetLoadingViewPosition(SwipeConstants.MODE_ABOVE);
 					if (mOnSwipeListener != null)
 						mOnSwipeListener.onSwipeCanceled(mDirection);
 				} else {
@@ -169,7 +165,7 @@ public class EndlessSwipeDetectorView extends View {
 		setClickable(isConsume); // Pause or resume detect swipe event.
 	}
 
-	private boolean isConsumeTouchEvent() {
+	private boolean isInterceptTouchEvent() {
 		return isClickable();
 	}
 
@@ -181,21 +177,21 @@ public class EndlessSwipeDetectorView extends View {
 
 		LogUtil.d(TAG, "[hideLoadingView] isShowAnimation = " + isShowAnimation + " direction= " + direction);
 
-		if (direction == EndlessSwipeConstants.SWIPE_UNKNOW) {
+		if (direction == SwipeConstants.SWIPE_UNKNOWN) {
 			setInterceptTouchEvent(false);
 			if (listener != null) listener.onAnimationStart(null);
-			resetLoadingViewPosition(MODE_BOTTOM);
+			resetLoadingViewPosition(SwipeConstants.MODE_BOTTOM);
 			if (listener != null) listener.onAnimationEnd(null);
 			setInterceptTouchEvent(true);
 			return;
 		}
 
 		float targetTranslateY;
-		if (direction == EndlessSwipeConstants.SWIPE_TO_UP) {
+		if (direction == SwipeConstants.SWIPE_TO_UP) {
 			if (!isShowAnimation) {
 				setInterceptTouchEvent(false);
 				if (listener != null) listener.onAnimationStart(null);
-				resetLoadingViewPosition(MODE_BOTTOM);
+				resetLoadingViewPosition(SwipeConstants.MODE_BOTTOM);
 				if (listener != null) listener.onAnimationEnd(null);
 				setInterceptTouchEvent(true);
 				return;
@@ -205,7 +201,7 @@ public class EndlessSwipeDetectorView extends View {
 			if (!isShowAnimation) {
 				setInterceptTouchEvent(false);
 				if (listener != null) listener.onAnimationStart(null);
-				resetLoadingViewPosition(MODE_ABOVE);
+				resetLoadingViewPosition(SwipeConstants.MODE_ABOVE);
 				if (listener != null) listener.onAnimationEnd(null);
 				setInterceptTouchEvent(true);
 				return;
@@ -239,17 +235,17 @@ public class EndlessSwipeDetectorView extends View {
 
 		LogUtil.d(TAG, "[showLoadingView] isShowAnimation = " + isShowAnimation + " direction= " + direction);
 
-		if (direction == EndlessSwipeConstants.SWIPE_UNKNOW) {
+		if (direction == SwipeConstants.SWIPE_UNKNOWN) {
 			setInterceptTouchEvent(false);
 			if (listener != null) listener.onAnimationStart(null);
-			resetLoadingViewPosition(MODE_CENTER);
+			resetLoadingViewPosition(SwipeConstants.MODE_CENTER);
 			if (listener != null) listener.onAnimationEnd(null);
 		}
 
 		if (!isShowAnimation) {
 			setInterceptTouchEvent(false);
 			if (listener != null) listener.onAnimationStart(null);
-			resetLoadingViewPosition(MODE_CENTER);
+			resetLoadingViewPosition(SwipeConstants.MODE_CENTER);
 			if (listener != null) listener.onAnimationEnd(null);
 			return;
 		}
@@ -277,13 +273,13 @@ public class EndlessSwipeDetectorView extends View {
 			return;
 		}
 		switch (mode) {
-			case MODE_ABOVE:
+			case SwipeConstants.MODE_ABOVE:
 				ViewCompat.setTranslationY(mLoadingView, -getTotalHeight());
 				break;
-			case MODE_CENTER:
+			case SwipeConstants.MODE_CENTER:
 				ViewCompat.setTranslationY(mLoadingView, 0f);
 				break;
-			case MODE_BOTTOM:
+			case SwipeConstants.MODE_BOTTOM:
 				ViewCompat.setTranslationY(mLoadingView, getTotalHeight());
 				break;
 		}
@@ -298,7 +294,7 @@ public class EndlessSwipeDetectorView extends View {
 		super.onDraw(canvas);
 		// Hide the loading view in the very beginning.
 		if (!isCreated.get()) {
-			hideLoadingView(false, EndlessSwipeConstants.SWIPE_UNKNOW, null);
+			hideLoadingView(false, SwipeConstants.SWIPE_UNKNOWN, null);
 			isCreated.set(true);
 		}
 
@@ -311,7 +307,7 @@ public class EndlessSwipeDetectorView extends View {
 
 	float y_pre = 0;
 	float y_down = 0;
-	int mDirection = EndlessSwipeConstants.SWIPE_UNKNOW;
+	int mDirection = SwipeConstants.SWIPE_UNKNOWN;
 	boolean isBeginSwipe = false;
 
 	@Override
@@ -323,7 +319,7 @@ public class EndlessSwipeDetectorView extends View {
 				logEventInfo("ACTION_DOWN", event);
 				y_down = event.getY();
 				y_pre = event.getY();
-				mDirection = EndlessSwipeConstants.SWIPE_UNKNOW;
+				mDirection = SwipeConstants.SWIPE_UNKNOWN;
 				isBeginSwipe = false;
 				break;
 			case MotionEvent.ACTION_MOVE:
@@ -333,10 +329,10 @@ public class EndlessSwipeDetectorView extends View {
 				} else if (Math.abs(event.getY() - y_down) >= iTouchEventProxy.getThreshold()) {
 					if (event.getY() <= y_down) {
 						// down to up
-						mDirection = EndlessSwipeConstants.SWIPE_TO_UP;
+						mDirection = SwipeConstants.SWIPE_TO_UP;
 					} else {
 						// up to down
-						mDirection = EndlessSwipeConstants.SWIPE_TO_DOWN;
+						mDirection = SwipeConstants.SWIPE_TO_DOWN;
 					}
 					iTouchEventProxy.onPreTouch(mDirection);
 					isBeginSwipe = true;
@@ -355,7 +351,7 @@ public class EndlessSwipeDetectorView extends View {
 				}
 				break;
 		}
-		return isConsumeTouchEvent() || super.onTouchEvent(event);
+		return isInterceptTouchEvent() || super.onTouchEvent(event);
 	}
 
 	private void logEventInfo(String type, MotionEvent event) {
@@ -388,18 +384,5 @@ public class EndlessSwipeDetectorView extends View {
 		public void onPostTouch(int direction);
 	}
 
-	public class EndlessSwipeConstants {
-		final public static int SWIPE_UNKNOW = -1;
-		final public static int SWIPE_TO_UP = 1;
-		final public static int SWIPE_TO_DOWN = 3;
-	}
 
-
-	public interface OnSwipeListener {
-		public void onSwiping(float swipeRatio, int direction);
-
-		public void onSwipeFinished(int direction);
-
-		public void onSwipeCanceled(int direction);
-	}
 }

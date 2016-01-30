@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 import widget.kaedea.com.swipeloadingview.EndlessSwipeDetectorView;
+import widget.kaedea.com.swipeloadingview.OnSwipeListener;
 import widget.kaedea.com.swipeloadingview.R;
+import widget.kaedea.com.swipeloadingview.SwipeConstants;
 
 public class VerticalSwipeActivity extends AppCompatActivity {
 
@@ -17,7 +19,7 @@ public class VerticalSwipeActivity extends AppCompatActivity {
 		final EndlessSwipeDetectorView swipeDetectorLayout = (EndlessSwipeDetectorView) this.findViewById(R.id.swipe_loading);
 		View loadingView = this.findViewById(R.id.view_loading);
 		swipeDetectorLayout.setLoadingView(loadingView);
-		swipeDetectorLayout.setOnSwipeListener(new EndlessSwipeDetectorView.OnSwipeListener() {
+		swipeDetectorLayout.setOnSwipeListener(new OnSwipeListener() {
 			@Override
 			public void onSwiping(float swipeRatio, int direction) {
 			}
@@ -25,7 +27,7 @@ public class VerticalSwipeActivity extends AppCompatActivity {
 			@Override
 			public void onSwipeFinished(int direction) {
 				Toast.makeText(VerticalSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_LONG).show();
-				swipeDetectorLayout.hideLoadingView(false, EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_UNKNOW,null);
+				swipeDetectorLayout.hideLoadingView(false, SwipeConstants.SWIPE_UNKNOWN,null);
 			}
 
 			@Override

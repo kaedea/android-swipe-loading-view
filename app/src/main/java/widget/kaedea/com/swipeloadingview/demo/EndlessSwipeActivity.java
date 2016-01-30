@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import widget.kaedea.com.swipeloadingview.EndlessSwipeDetectorView;
+import widget.kaedea.com.swipeloadingview.OnSwipeListener;
 import widget.kaedea.com.swipeloadingview.R;
+import widget.kaedea.com.swipeloadingview.SwipeConstants;
 
 public class EndlessSwipeActivity extends AppCompatActivity {
 
@@ -21,7 +23,7 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 		final TextView tvIndex = (TextView) this.findViewById(R.id.tv_index);
 		tvIndex.setText(String.valueOf(mIndex));
 		swipeDetectorLayout.setLoadingView(loadingView);
-		swipeDetectorLayout.setOnSwipeListener(new EndlessSwipeDetectorView.OnSwipeListener() {
+		swipeDetectorLayout.setOnSwipeListener(new OnSwipeListener() {
 			@Override
 			public void onSwiping(float swipeRatio, int direction) {
 			}
@@ -29,10 +31,10 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 			@Override
 			public void onSwipeFinished(int direction) {
 				// Toast.makeText(EndlessSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_LONG).show();
-				if (direction == EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_TO_UP) mIndex++;
-				else if (direction == EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_TO_DOWN) mIndex--;
+				if (direction == SwipeConstants.SWIPE_TO_UP) mIndex++;
+				else if (direction == SwipeConstants.SWIPE_TO_DOWN) mIndex--;
 				tvIndex.setText(String.valueOf(mIndex));
-				swipeDetectorLayout.hideLoadingView(false, EndlessSwipeDetectorView.EndlessSwipeConstants.SWIPE_UNKNOW, null);
+				swipeDetectorLayout.hideLoadingView(false, SwipeConstants.SWIPE_UNKNOWN, null);
 			}
 
 			@Override

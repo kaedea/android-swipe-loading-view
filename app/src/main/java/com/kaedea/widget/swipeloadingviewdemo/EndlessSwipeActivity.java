@@ -77,7 +77,7 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 
 		@Override
 		public void run() {
-			Toast.makeText(EndlessSwipeActivity.this, "Loading Success!", Toast.LENGTH_LONG).show();
+			Toast.makeText(EndlessSwipeActivity.this, "Loading Success!", Toast.LENGTH_SHORT).show();
 			pbMain.setVisibility(View.INVISIBLE);
 		}
 	}

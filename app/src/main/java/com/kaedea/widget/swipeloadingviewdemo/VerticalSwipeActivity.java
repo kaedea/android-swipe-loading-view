@@ -24,12 +24,12 @@ public class VerticalSwipeActivity extends AppCompatActivity {
 
 			@Override
 			public void onSwipeFinished(int direction) {
-				Toast.makeText(VerticalSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_LONG).show();
+				Toast.makeText(VerticalSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_SHORT).show();
 			}
 
 			@Override
 			public void onSwipeCanceled(int direction) {
-				Toast.makeText(VerticalSwipeActivity.this, "onSwipeCanceled", Toast.LENGTH_LONG).show();
+				Toast.makeText(VerticalSwipeActivity.this, "onSwipeCanceled", Toast.LENGTH_SHORT).show();
 			}
 		});
 		loadingView.setOnClickListener(new View.OnClickListener() {

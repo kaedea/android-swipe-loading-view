@@ -64,6 +64,13 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 		});
 
 		// swipeDetectorLayout.setAnimationDuration(10000);
+
+		swipeDetectorLayout.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(EndlessSwipeActivity.this, "onClick", Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 
 	public class LoadingTask implements Runnable{

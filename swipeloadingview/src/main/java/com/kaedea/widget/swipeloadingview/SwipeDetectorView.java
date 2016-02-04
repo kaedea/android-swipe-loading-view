@@ -306,29 +306,34 @@ public class SwipeDetectorView extends View {
 	float y_down = 0;
 	int mDirection = SwipeConstants.SWIPE_UNKNOWN;
 	boolean isBeginSwipe = false;
+	boolean isMultiTouch = false;
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		if (isMultiTouch || event.getPointerCount() > 1) {
+			mIsEnable = true;
+			return super.onTouchEvent(event); // Eliminate multi-touch.
+		}
 		if (!mIsEnable) return super.onTouchEvent(event); // Enable is false.
 		if (iTouchEventProxy == null) return super.onTouchEvent(event);
 
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				logEventInfo("ACTION_DOWN", event);
-				y_down = event.getY();
-				y_pre = event.getY();
+				y_down = event.getY(0);
+				y_pre = event.getY(0);
 				mDirection = SwipeConstants.SWIPE_UNKNOWN;
 				isBeginSwipe = false;
 				break;
 			case MotionEvent.ACTION_MOVE:
 				logEventInfo("ACTION_MOVE", event);
 				if (isBeginSwipe) {
-					iTouchEventProxy.onTouchOffset(event.getY() - y_pre, mDirection);
-				} else if (Math.abs(event.getY() - y_down) >= iTouchEventProxy.getThreshold()) {
+					iTouchEventProxy.onTouchOffset(event.getY(0) - y_pre, mDirection);
+				} else if (Math.abs(event.getY(0) - y_down) >= iTouchEventProxy.getThreshold()) {
 
 					// Start swipe job.
 					if (mWorkingMode == SwipeConstants.MODE_VERTICAL) {
-						if (event.getY() <= y_down) {
+						if (event.getY(0) <= y_down) {
 							// down to up
 							mDirection = SwipeConstants.SWIPE_TO_UP;
 						} else {
@@ -337,26 +342,26 @@ public class SwipeDetectorView extends View {
 						}
 						iTouchEventProxy.onPreTouch(mDirection);
 						isBeginSwipe = true;
-						iTouchEventProxy.onTouchOffset(event.getY() - y_pre, mDirection);
+						iTouchEventProxy.onTouchOffset(event.getY(0) - y_pre, mDirection);
 					} else if (mWorkingMode == SwipeConstants.MODE_BOTTOM) {
-						if (event.getY() <= y_down) {
+						if (event.getY(0) <= y_down) {
 							mDirection = SwipeConstants.SWIPE_TO_UP;
 							iTouchEventProxy.onPreTouch(mDirection);
 							isBeginSwipe = true;
-							iTouchEventProxy.onTouchOffset(event.getY() - y_pre, mDirection);
+							iTouchEventProxy.onTouchOffset(event.getY(0) - y_pre, mDirection);
 						}
 
 					} else {
-						if (event.getY() > y_down) {
+						if (event.getY(0) > y_down) {
 							mDirection = SwipeConstants.SWIPE_TO_DOWN;
 							iTouchEventProxy.onPreTouch(mDirection);
 							isBeginSwipe = true;
-							iTouchEventProxy.onTouchOffset(event.getY() - y_pre, mDirection);
+							iTouchEventProxy.onTouchOffset(event.getY(0) - y_pre, mDirection);
 						}
 
 					}
 				}
-				y_pre = event.getY();
+				y_pre = event.getY(0);
 				break;
 			default:
 				LogUtil.i(TAG, "Action = " + event.getAction());
@@ -366,6 +371,14 @@ public class SwipeDetectorView extends View {
 				if (isBeginSwipe) {
 					isBeginSwipe = false;
 					iTouchEventProxy.onPostTouch(mDirection);
+					return true;
+				} else {
+					// The OnClick event is based on the TouchEvent, since we have changed the handling ot the TouchEvent,
+					// we have to do the OnClick ourselves, or the OnClickListener of this view will not work.
+					performClick();
+				}
+				if (event.getPointerCount() <= 1) {
+					isMultiTouch = false;
 				}
 				break;
 		}
@@ -373,7 +386,7 @@ public class SwipeDetectorView extends View {
 	}
 
 	private void logEventInfo(String type, MotionEvent event) {
-		LogUtil.d(TAG, "[onTouchEvent][logEventInfo] " + type + " getY= " + event.getY() + "; getRawY=" + event.getRawY());
+		LogUtil.d(TAG, "[onTouchEvent][logEventInfo] " + type + " getY= " + event.getY(0) + "; getRawY=" + event.getRawY());
 	}
 
 	public void setLoadingView(View loadingView) {

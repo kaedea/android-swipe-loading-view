@@ -10,6 +10,7 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import com.kaedea.widget.swipeloadingview.util.LogUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -56,7 +57,7 @@ public class SwipeDetectorView extends View {
 	private void init() {
 		isCreated.set(false);
 		setInterceptTouchEvent(true);
-		mSwipeRatioThreshold = 0.5f;
+		mSwipeRatioThreshold = 0.2f;
 		iTouchEventProxy = new ITouchEventProxy() {
 			int threshold = 100;
 
@@ -216,6 +217,7 @@ public class SwipeDetectorView extends View {
 		// Execute animation job.
 		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), targetTranslateY);
 		objectAnimator.setDuration(mDuration);
+		objectAnimator.setInterpolator(new LinearInterpolator());
 		objectAnimator.addListener(new SwipeAnimatorListener() {
 
 			@Override
@@ -256,6 +258,7 @@ public class SwipeDetectorView extends View {
 		}
 		// Execute animation job.
 		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", mLoadingView.getTranslationY(), 0f);
+		objectAnimator.setInterpolator(new LinearInterpolator());
 		objectAnimator.setDuration(mDuration);
 		objectAnimator.addListener(new SwipeAnimatorListener() {
 

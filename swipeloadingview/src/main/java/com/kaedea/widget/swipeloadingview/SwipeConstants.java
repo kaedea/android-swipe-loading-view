@@ -22,6 +22,6 @@ public class SwipeConstants {
 	final public static int MODE_VERTICAL = 2;
 
 	// Config
-	public static final int DEFAULT_DURATION = 500;
+	public static final int DEFAULT_DURATION = 300;
 	public static final int DEFAULT_WORKING_MODE = MODE_VERTICAL;
 }

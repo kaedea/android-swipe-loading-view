@@ -84,6 +84,8 @@ public class SwipeDetectorView extends View {
 				} else {
 					resetLoadingViewPosition(SwipeConstants.POSITION_ABOVE);
 				}
+				if (mOnSwipeListener != null)
+					mOnSwipeListener.onSwipeStart(direction);
 			}
 
 			@Override
@@ -127,34 +129,38 @@ public class SwipeDetectorView extends View {
 					LogUtil.i(TAG, "[onPostTouch] below the bottom end");
 					resetLoadingViewPosition(SwipeConstants.POSITION_BOTTOM);
 					if (mOnSwipeListener != null)
-						mOnSwipeListener.onSwipeCanceled(mDirection);
+						mOnSwipeListener.onSwipeCancel(mDirection);
 				} else if (mLoadingView.getTranslationY() < -getTotalHeight()) {
 					// above the top end
 					LogUtil.i(TAG, "[onPostTouch] above the top end");
 					resetLoadingViewPosition(SwipeConstants.POSITION_ABOVE);
 					if (mOnSwipeListener != null)
-						mOnSwipeListener.onSwipeCanceled(mDirection);
+						mOnSwipeListener.onSwipeCancel(mDirection);
 				} else {
 					if (mSwipeRatio <= mSwipeRatioThreshold) {
 						// Can not reach the "Swipe Threshold", therefore taking it as Cancel;
+						if (mOnSwipeListener != null)
+							mOnSwipeListener.onPostSwipeCancel(mDirection);
 						hideLoadingView(true, direction, new SwipeAnimatorListener() {
 
 							@Override
 							public void onAnimationEnd(Animator animation) {
 								LogUtil.i(TAG, "[onPostTouch] Swipe Cancel");
 								if (mOnSwipeListener != null)
-									mOnSwipeListener.onSwipeCanceled(mDirection);
+									mOnSwipeListener.onSwipeCancel(mDirection);
 							}
 						});
 
 					} else {
 						// Reach the "Swipe Threshold", therefore taking it as Finish;
+						if (mOnSwipeListener != null)
+							mOnSwipeListener.onPostSwipeFinish(mDirection);
 						showLoadingView(true, direction, new SwipeAnimatorListener() {
 							@Override
 							public void onAnimationEnd(Animator animation) {
 								LogUtil.i(TAG, "[onPostTouch] Swipe Finish");
 								if (mOnSwipeListener != null)
-									mOnSwipeListener.onSwipeFinished(mDirection);
+									mOnSwipeListener.onSwipeFinish(mDirection);
 							}
 						});
 

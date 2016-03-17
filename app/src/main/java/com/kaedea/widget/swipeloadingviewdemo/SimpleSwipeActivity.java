@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
-import com.kaedea.widget.swipeloadingview.OnSwipeListener;
 import com.kaedea.widget.swipeloadingview.SwipeConstants;
 import com.kaedea.widget.swipeloadingview.SwipeDetectorView;
 
@@ -20,18 +19,17 @@ public class SimpleSwipeActivity extends AppCompatActivity {
         swipeDetectorLayout.setLoadingView(loadingView);
 
         // Add OnSwipeListener.
-        swipeDetectorLayout.setOnSwipeListener(new OnSwipeListener() {
-            @Override
-            public void onSwiping(float swipeRatio, int direction) {
-            }
+        swipeDetectorLayout.setOnSwipeListener(new BaseOnSwipeListenerImpl() {
+
 
             @Override
-            public void onSwipeFinished(int direction) {
+            public void onSwipeFinish(int direction) {
                 Toast.makeText(SimpleSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_SHORT).show();
             }
 
+
             @Override
-            public void onSwipeCanceled(int direction) {
+            public void onSwipeCancel(int direction) {
                 Toast.makeText(SimpleSwipeActivity.this, "onSwipeCanceled", Toast.LENGTH_SHORT).show();
             }
         });

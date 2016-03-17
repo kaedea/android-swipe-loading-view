@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
-import com.kaedea.widget.swipeloadingview.OnSwipeListener;
 import com.kaedea.widget.swipeloadingview.SwipeDetectorView;
 
 public class VerticalSwipeActivity extends AppCompatActivity {
@@ -17,18 +16,17 @@ public class VerticalSwipeActivity extends AppCompatActivity {
 		final SwipeDetectorView swipeDetectorLayout = (SwipeDetectorView) this.findViewById(R.id.swipe_loading);
 		View loadingView = this.findViewById(R.id.view_loading);
 		swipeDetectorLayout.setLoadingView(loadingView);
-		swipeDetectorLayout.setOnSwipeListener(new OnSwipeListener() {
-			@Override
-			public void onSwiping(float swipeRatio, int direction) {
-			}
+		swipeDetectorLayout.setOnSwipeListener(new BaseOnSwipeListenerImpl() {
+
 
 			@Override
-			public void onSwipeFinished(int direction) {
+			public void onSwipeFinish(int direction) {
 				Toast.makeText(VerticalSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_SHORT).show();
 			}
 
+
 			@Override
-			public void onSwipeCanceled(int direction) {
+			public void onSwipeCancel(int direction) {
 				Toast.makeText(VerticalSwipeActivity.this, "onSwipeCanceled", Toast.LENGTH_SHORT).show();
 			}
 		});

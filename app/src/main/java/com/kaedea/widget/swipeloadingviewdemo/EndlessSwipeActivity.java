@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.kaedea.widget.swipeloadingview.OnSwipeListener;
 import com.kaedea.widget.swipeloadingview.SwipeConstants;
 import com.kaedea.widget.swipeloadingview.SwipeDetectorView;
 
@@ -32,13 +31,10 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 		final TextView tvIndex = (TextView) this.findViewById(R.id.tv_index);
 		tvIndex.setText(String.valueOf(mIndex));
 		swipeDetectorLayout.setLoadingView(loadingView);
-		swipeDetectorLayout.setOnSwipeListener(new OnSwipeListener() {
-			@Override
-			public void onSwiping(float swipeRatio, int direction) {
-			}
+		swipeDetectorLayout.setOnSwipeListener(new BaseOnSwipeListenerImpl() {
 
 			@Override
-			public void onSwipeFinished(int direction) {
+			public void onSwipeFinish(int direction) {
 				// Toast.makeText(EndlessSwipeActivity.this, "onSwipeFinished", Toast.LENGTH_LONG).show();
 				if (direction == SwipeConstants.SWIPE_TO_UP) mIndex++;
 				else if (direction == SwipeConstants.SWIPE_TO_DOWN) mIndex--;
@@ -51,10 +47,6 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 				handler.postDelayed(mLoadingTask, 2000);
 			}
 
-			@Override
-			public void onSwipeCanceled(int direction) {
-				// Toast.makeText(EndlessSwipeActivity.this, "onSwipeCanceled", Toast.LENGTH_LONG).show();
-			}
 		});
 		loadingView.setOnClickListener(new View.OnClickListener() {
 			@Override

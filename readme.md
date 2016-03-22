@@ -2,7 +2,7 @@
 ![preview](doc/swipeload_preview.gif)
 
 ### Introduction
-SwipeLoadingView offers a LoadingView like drawer when you are swiping on it. You can use this view when you want to switch something like video or picture.
+SwipeLoadingView offers a LoadingView like drawer when you are swiping on it. You can use this widget when you want to switch something like video or picture.
 
 ### Feature & Todo
 

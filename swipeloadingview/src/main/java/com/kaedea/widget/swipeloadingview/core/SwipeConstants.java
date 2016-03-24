@@ -1,4 +1,4 @@
-package com.kaedea.widget.swipeloadingview;
+package com.kaedea.widget.swipeloadingview.core;
 
 /**
  * Constants for SwipeLoadingView

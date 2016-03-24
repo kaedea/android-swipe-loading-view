@@ -5,18 +5,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 import com.kaedea.widget.swipeloadingview.SwipeDetectorView;
+import com.kaedea.widget.swipeloadingview.SwipeHandlerFactory;
+import com.kaedea.widget.swipeloadingview.core.ISwipeHandler;
 
 public class VerticalSwipeActivity extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_endless_swipe);
+		setContentView(R.layout.activity_swipe_demo);
 
 		final SwipeDetectorView swipeDetectorLayout = (SwipeDetectorView) this.findViewById(R.id.swipe_loading);
 		View loadingView = this.findViewById(R.id.view_loading);
-		swipeDetectorLayout.setLoadingView(loadingView);
-		swipeDetectorLayout.setOnSwipeListener(new BaseOnSwipeListenerImpl() {
+		final ISwipeHandler iSwipeHandler = SwipeHandlerFactory.createDefaultSwipeHandler(swipeDetectorLayout);
+		iSwipeHandler.setLoadingView(loadingView);
+		iSwipeHandler.setOnSwipeListener(new BaseOnSwipeListenerImpl() {
 
 
 			@Override
@@ -33,7 +36,7 @@ public class VerticalSwipeActivity extends AppCompatActivity {
 		loadingView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				swipeDetectorLayout.hideLoadingView(true, swipeDetectorLayout.getDirection(),null);
+				iSwipeHandler.hideLoadingView(true, iSwipeHandler.getDirection(),null);
 			}
 		});
 	}

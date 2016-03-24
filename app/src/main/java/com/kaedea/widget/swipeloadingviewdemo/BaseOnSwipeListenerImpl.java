@@ -1,6 +1,6 @@
 package com.kaedea.widget.swipeloadingviewdemo;
 
-import com.kaedea.widget.swipeloadingview.OnSwipeListener;
+import com.kaedea.widget.swipeloadingview.core.OnSwipeListener;
 import com.kaedea.widget.swipeloadingview.util.LogUtil;
 
 /**

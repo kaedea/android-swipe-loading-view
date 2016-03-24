@@ -6,8 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.kaedea.widget.swipeloadingview.SwipeConstants;
 import com.kaedea.widget.swipeloadingview.SwipeDetectorView;
+import com.kaedea.widget.swipeloadingview.core.SwipeConstants;
+import com.kaedea.widget.swipeloadingview.SwipeHandlerFactory;
+import com.kaedea.widget.swipeloadingview.core.ISwipeHandler;
 
 public class EndlessSwipeActivity extends AppCompatActivity {
 
@@ -19,19 +21,20 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_endless_swipe);
+		setContentView(R.layout.activity_swipe_demo);
 
 		pbMain = this.findViewById(R.id.pb_main);
 		handler = new Handler();
 		mLoadingTask = new LoadingTask();
 		this.findViewById(R.id.layout_loadingcontent).setVisibility(View.INVISIBLE);
-
 		final SwipeDetectorView swipeDetectorLayout = (SwipeDetectorView) this.findViewById(R.id.swipe_loading);
 		View loadingView = this.findViewById(R.id.view_loading);
+		final ISwipeHandler iSwipeHandler = SwipeHandlerFactory.createDefaultSwipeHandler(swipeDetectorLayout);
+		iSwipeHandler.setLoadingView(loadingView);
 		final TextView tvIndex = (TextView) this.findViewById(R.id.tv_index);
 		tvIndex.setText(String.valueOf(mIndex));
-		swipeDetectorLayout.setLoadingView(loadingView);
-		swipeDetectorLayout.setOnSwipeListener(new BaseOnSwipeListenerImpl() {
+		iSwipeHandler.setLoadingView(loadingView);
+		iSwipeHandler.setOnSwipeListener(new BaseOnSwipeListenerImpl() {
 
 			@Override
 			public void onSwipeFinish(int direction) {
@@ -39,7 +42,7 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 				if (direction == SwipeConstants.SWIPE_TO_UP) mIndex++;
 				else if (direction == SwipeConstants.SWIPE_TO_DOWN) mIndex--;
 				tvIndex.setText(String.valueOf(mIndex));
-				swipeDetectorLayout.hideLoadingView(false, SwipeConstants.SWIPE_UNKNOWN, null);
+				iSwipeHandler.hideLoadingView(false, SwipeConstants.SWIPE_UNKNOWN, null);
 
 				// do loading job
 				handler.removeCallbacks(mLoadingTask);
@@ -51,7 +54,7 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 		loadingView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				swipeDetectorLayout.hideLoadingView(true, swipeDetectorLayout.getDirection(), null);
+				iSwipeHandler.hideLoadingView(true, iSwipeHandler.getDirection(), null);
 			}
 		});
 
@@ -65,7 +68,7 @@ public class EndlessSwipeActivity extends AppCompatActivity {
 		});
 	}
 
-	public class LoadingTask implements Runnable{
+	public class LoadingTask implements Runnable {
 
 		@Override
 		public void run() {

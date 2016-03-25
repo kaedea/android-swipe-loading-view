@@ -18,12 +18,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created kaede on 1/26/16.
  */
 public class SwipeDetectorView extends View implements ISwipeDetector {
-    public static final String TAG = "SwipeDetectorLayout";
+    public static final String TAG = "SwipeDetectorView";
 
     ISwipeHandler iSwipeHandler;
     ITouEventHandler iTouEventHandler;
 
-    AtomicBoolean isCreated = new AtomicBoolean();
+    private boolean isCreated = false;
     private boolean mIsIntercept = false;
 
     public SwipeDetectorView(Context context) {
@@ -48,8 +48,23 @@ public class SwipeDetectorView extends View implements ISwipeDetector {
     }
 
     private void init() {
-        isCreated.set(false);
-        setInterceptTouchEvent(true);
+        isCreated = false;
+        this.setInterceptTouchEvent(true);
+    }
+
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        // Hide the loading view in the very beginning.
+        if (!isCreated) {
+            if (iSwipeHandler !=null){
+                iSwipeHandler.hideLoadingView(false, SwipeConstants.SWIPE_UNKNOWN, null);
+            }
+            isCreated = true;
+        }
+
     }
 
 
@@ -60,37 +75,23 @@ public class SwipeDetectorView extends View implements ISwipeDetector {
 
     }
 
-
-
+    @Override
     public void setInterceptTouchEvent(boolean isInterceptTouchEvent) {
         // setClickable(isInterceptTouchEvent); // Pause or resume detect swipe event.
         mIsIntercept = isInterceptTouchEvent;
     }
 
+
+    @Override
     public boolean isInterceptTouchEvent() {
         // return isClickable();
         return mIsIntercept;
     }
 
-
-
+    @Override
     public int getTotalHeight() {
         return this.getMeasuredHeight();
     }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        // Hide the loading view in the very beginning.
-        if (!isCreated.get()) {
-            if (iSwipeHandler !=null){
-                iSwipeHandler.hideLoadingView(false, SwipeConstants.SWIPE_UNKNOWN, null);
-            }
-           isCreated.set(true);
-        }
-
-    }
-    int mDirection = SwipeConstants.SWIPE_UNKNOWN;
 
 
     @Override

@@ -6,5 +6,8 @@ package com.kaedea.widget.swipeloadingview.core;
 public interface ISwipeDetector {
 	void attach(ITouEventHandler iTouEventHandler, ISwipeHandler iSwipeHandler);
 	void setInterceptTouchEvent(boolean isEnable);
+
+	boolean isInterceptTouchEvent();
+
 	int getTotalHeight();
 }

@@ -6,21 +6,23 @@ package com.kaedea.widget.swipeloadingview.core;
  */
 public class SwipeConstants {
 
+	public static final int INT_INVALID = -10086;
+
 	// Swipe Mode
 	final public static int SWIPE_UNKNOWN = -1;
 	final public static int SWIPE_TO_UP = 1;
-	final public static int SWIPE_TO_DOWN = 3;
 
+	final public static int SWIPE_TO_DOWN = 3;
 	// LoadingView Position
 	final public static int POSITION_ABOVE = 0;
 	final public static int POSITION_CENTER = 1;
-	final public static int POSITION_BOTTOM = 2;
 
+	final public static int POSITION_BOTTOM = 2;
 	// Working Mode
 	final public static int MODE_BOTTOM = 0;
 	final public static int MODE_UP = 1;
-	final public static int MODE_VERTICAL = 2;
 
+	final public static int MODE_VERTICAL = 2;
 	// Config
 	public static final int DEFAULT_DURATION = 300;
 	public static final int DEFAULT_WORKING_MODE = MODE_VERTICAL;

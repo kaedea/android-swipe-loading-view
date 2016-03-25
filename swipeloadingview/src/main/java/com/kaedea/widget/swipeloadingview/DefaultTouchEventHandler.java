@@ -12,12 +12,11 @@ import com.kaedea.widget.swipeloadingview.util.LogUtil;
  */
 public class DefaultTouchEventHandler implements ITouEventHandler {
 	public static final String TAG = "DefaultTouchEventHandler";
-	public static final int INT_INVALID = -10086;
 
 	ISwipeHandler iSwipeHandler;
 
-	float y_pre = INT_INVALID;
-	float y_down = INT_INVALID;
+	float y_pre = SwipeConstants.INT_INVALID;
+	float y_down = SwipeConstants.INT_INVALID;
 	boolean isBeginSwipe = false;
 	// boolean isMultiTouch = false;
 
@@ -54,7 +53,7 @@ public class DefaultTouchEventHandler implements ITouEventHandler {
 				} else {
 					float y_abs = Math.abs(event.getY(0) - y_down);
 					LogUtil.i(TAG, "[onTouchEvent] y_abs = " + y_abs);
-					if (y_down != INT_INVALID && y_abs >= iSwipeHandler.getThresholdMin() && y_abs <= iSwipeHandler.getThresholdMax()) {
+					if (y_down != SwipeConstants.INT_INVALID && y_abs >= iSwipeHandler.getThresholdMin() && y_abs <= iSwipeHandler.getThresholdMax()) {
 
 						// Start swipe job.
 						if (iSwipeHandler.getWorkingMode() == SwipeConstants.MODE_VERTICAL) {
@@ -92,8 +91,8 @@ public class DefaultTouchEventHandler implements ITouEventHandler {
 			default:
 				LogUtil.i(TAG, "Action = " + event.getAction());
 				logEventInfo("ACTION_OTHERS", event);
-				y_down = INT_INVALID;
-				y_pre = INT_INVALID;
+				y_down = SwipeConstants.INT_INVALID;
+				y_pre = SwipeConstants.INT_INVALID;
 				if (isBeginSwipe) {
 					isBeginSwipe = false;
 					iSwipeHandler.onPostTouch(iSwipeHandler.getDirection());

@@ -20,9 +20,9 @@ public interface ISwipeHandler {
 
     void onPostTouch(int direction);
 
-    void hideLoadingView(boolean isShowAnimation, int direction, SwipeAnimatorListener listener);
+    void hideLoadingView(boolean isShowAnimation, int direction, OnSwipeAnimationListener listener);
 
-    void showLoadingView(boolean isShowAnimation, int direction, SwipeAnimatorListener listener);
+    void showLoadingView(boolean isShowAnimation, int direction, OnSwipeAnimationListener listener);
 
     void setLoadingView(View loadingView);
 

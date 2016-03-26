@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kaedea.widget.swipeloadingview.animation;
+package com.kaedea.widget.swipeloadingview.util.animation;
 
 /**
  * This adapter class provides empty implementations of the methods from {@link android.animation.Animator.AnimatorListener}.

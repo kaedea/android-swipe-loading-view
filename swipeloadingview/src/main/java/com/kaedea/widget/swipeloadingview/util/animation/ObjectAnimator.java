@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.kaedea.widget.swipeloadingview.animation;
+package com.kaedea.widget.swipeloadingview.util.animation;
 
 import android.util.Log;
 import android.view.View;
 
-import com.kaedea.widget.swipeloadingview.animation.proxy.AnimatorProxy;
+import com.kaedea.widget.swipeloadingview.util.animation.proxy.AnimatorProxy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

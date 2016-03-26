@@ -1,4 +1,4 @@
-package com.kaedea.widget.swipeloadingview.animation.proxy;
+package com.kaedea.widget.swipeloadingview.util.animation.proxy;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;

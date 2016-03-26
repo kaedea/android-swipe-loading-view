@@ -1,12 +1,12 @@
-package com.kaedea.widget.swipeloadingview.core;
+package com.kaedea.widget.swipeloadingview;
 
 
-import com.kaedea.widget.swipeloadingview.animation.Animator;
+import com.kaedea.widget.swipeloadingview.util.animation.Animator;
 
 /**
  * Created by kaede on 2016/1/28.
  */
-abstract public class SwipeAnimatorListener implements Animator.AnimatorListener {
+abstract public class BaseSwipeAnimatorListener implements Animator.AnimatorListener {
 
     /**
      * {@inheritDoc}

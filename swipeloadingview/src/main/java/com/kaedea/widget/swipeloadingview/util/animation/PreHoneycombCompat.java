@@ -1,8 +1,8 @@
-package com.kaedea.widget.swipeloadingview.animation;
+package com.kaedea.widget.swipeloadingview.util.animation;
 
 import android.view.View;
 
-import com.kaedea.widget.swipeloadingview.animation.proxy.AnimatorProxy;
+import com.kaedea.widget.swipeloadingview.util.animation.proxy.AnimatorProxy;
 
 final class PreHoneycombCompat {
     static Property<View, Float> ALPHA = new FloatProperty<View>("alpha") {

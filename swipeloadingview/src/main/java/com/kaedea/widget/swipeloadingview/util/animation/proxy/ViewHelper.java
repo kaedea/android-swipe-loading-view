@@ -1,11 +1,11 @@
-package com.kaedea.widget.swipeloadingview.animation.proxy;
+package com.kaedea.widget.swipeloadingview.util.animation.proxy;
 
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.view.View;
 
-import static com.kaedea.widget.swipeloadingview.animation.proxy.AnimatorProxy.NEEDS_PROXY;
-import static com.kaedea.widget.swipeloadingview.animation.proxy.AnimatorProxy.wrap;
+import static com.kaedea.widget.swipeloadingview.util.animation.proxy.AnimatorProxy.NEEDS_PROXY;
+import static com.kaedea.widget.swipeloadingview.util.animation.proxy.AnimatorProxy.wrap;
 
 public final class ViewHelper {
     private ViewHelper() {}

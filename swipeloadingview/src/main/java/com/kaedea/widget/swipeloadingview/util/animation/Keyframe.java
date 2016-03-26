@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kaedea.widget.swipeloadingview.animation;
+package com.kaedea.widget.swipeloadingview.util.animation;
 
 import android.view.animation.Interpolator;
 

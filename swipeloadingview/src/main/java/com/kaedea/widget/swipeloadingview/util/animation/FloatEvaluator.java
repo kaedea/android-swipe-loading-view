@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package com.kaedea.widget.swipeloadingview.animation;
+package com.kaedea.widget.swipeloadingview.util.animation;
 
 /**
- * Interface for use with the {@link ValueAnimator#setEvaluator(TypeEvaluator)} function. Evaluators
- * allow developers to create animations on arbitrary property types, by allowing them to supply
- * custom evaulators for types that are not automatically understood and used by the animation
- * system.
- *
- * @see ValueAnimator#setEvaluator(TypeEvaluator)
+ * This evaluator can be used to perform type interpolation between <code>float</code> values.
  */
-public interface TypeEvaluator<T> {
+public class FloatEvaluator implements TypeEvaluator<Number> {
 
     /**
      * This function returns the result of linearly interpolating the start and end values, with
@@ -34,11 +29,14 @@ public interface TypeEvaluator<T> {
      * and <code>t</code> is <code>fraction</code>.
      *
      * @param fraction   The fraction from the starting to the ending values
-     * @param startValue The start value.
-     * @param endValue   The end value.
+     * @param startValue The start value; should be of type <code>float</code> or
+     *                   <code>Float</code>
+     * @param endValue   The end value; should be of type <code>float</code> or <code>Float</code>
      * @return A linear interpolation between the start and end values, given the
      *         <code>fraction</code> parameter.
      */
-    T evaluate(float fraction, T startValue, T endValue);
-
+    public Float evaluate(float fraction, Number startValue, Number endValue) {
+        float startFloat = startValue.floatValue();
+        return startFloat + fraction * (endValue.floatValue() - startFloat);
+    }
 }

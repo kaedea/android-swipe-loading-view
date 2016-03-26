@@ -2,10 +2,13 @@ package com.kaedea.widget.swipeloadingview;
 
 import android.support.v4.view.ViewCompat;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
-import com.kaedea.widget.swipeloadingview.animation.Animator;
-import com.kaedea.widget.swipeloadingview.animation.ObjectAnimator;
-import com.kaedea.widget.swipeloadingview.core.*;
+
+import com.kaedea.widget.swipeloadingview.core.IAnimationHandler;
+import com.kaedea.widget.swipeloadingview.core.ISwipeDetector;
+import com.kaedea.widget.swipeloadingview.core.ISwipeHandler;
+import com.kaedea.widget.swipeloadingview.core.OnSwipeAnimationListener;
+import com.kaedea.widget.swipeloadingview.core.OnSwipeListener;
+import com.kaedea.widget.swipeloadingview.core.SwipeConstants;
 import com.kaedea.widget.swipeloadingview.util.LogUtil;
 
 /**
@@ -16,10 +19,10 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 
 	View mLoadingView;
 	ISwipeDetector mISwipeDetector;
+	IAnimationHandler iAnimationHandler;
 	int mDirection = SwipeConstants.SWIPE_UNKNOWN;
 	OnSwipeListener mOnSwipeListener;
 	float mSwipeRatio;
-	private int mDuration = SwipeConstants.DEFAULT_DURATION;
 	private int mWorkingMode = SwipeConstants.DEFAULT_WORKING_MODE;
 	private boolean mIsEnable = true;
 
@@ -27,6 +30,9 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 	int thresholdMin = 20;
 	int thresholdMax = 150;
 
+	public DefaultSwipeHandler() {
+		iAnimationHandler = new DefaultAnimationHandler();
+	}
 
 	@Override
 	public void attach(ISwipeDetector iSwipeDetector){
@@ -116,10 +122,15 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 				// Can not reach the "Swipe Threshold", therefore taking it as Cancel;
 				if (mOnSwipeListener != null)
 					mOnSwipeListener.onPostSwipeCancel(mDirection);
-				hideLoadingView(true, direction, new SwipeAnimatorListener() {
+				hideLoadingView(true, direction, new OnSwipeAnimationListener() {
 
 					@Override
-					public void onAnimationEnd(Animator animation) {
+					public void onAnimationStart() {
+
+					}
+
+					@Override
+					public void onAnimationEnd() {
 						LogUtil.i(TAG, "[onPostTouch] Swipe Cancel");
 						if (mOnSwipeListener != null)
 							mOnSwipeListener.onSwipeCancel(mDirection);
@@ -130,9 +141,14 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 				// Reach the "Swipe Threshold", therefore taking it as Finish;
 				if (mOnSwipeListener != null)
 					mOnSwipeListener.onPostSwipeFinish(mDirection);
-				showLoadingView(true, direction, new SwipeAnimatorListener() {
+				showLoadingView(true, direction, new OnSwipeAnimationListener() {
 					@Override
-					public void onAnimationEnd(Animator animation) {
+					public void onAnimationStart() {
+
+					}
+
+					@Override
+					public void onAnimationEnd() {
 						LogUtil.i(TAG, "[onPostTouch] Swipe Finish");
 						if (mOnSwipeListener != null)
 							mOnSwipeListener.onSwipeFinish(mDirection);
@@ -173,7 +189,7 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 
 
 	@Override
-	public void hideLoadingView(boolean isShowAnimation, int direction, SwipeAnimatorListener listener) {
+	public void hideLoadingView(boolean isShowAnimation, int direction, final OnSwipeAnimationListener listener) {
 		if (mLoadingView == null) {
 			LogUtil.w(TAG, "[hideLoadingView] mLoadingView is null");
 			return;
@@ -183,9 +199,9 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 
 		if (direction == SwipeConstants.SWIPE_UNKNOWN) {
 			mISwipeDetector.setInterceptTouchEvent(false);
-			if (listener != null) listener.onAnimationStart(null);
+			if (listener != null) listener.onAnimationStart();
 			resetLoadingViewPosition(SwipeConstants.POSITION_BOTTOM);
-			if (listener != null) listener.onAnimationEnd(null);
+			if (listener != null) listener.onAnimationEnd();
 			mISwipeDetector.setInterceptTouchEvent(true);
 			return;
 		}
@@ -194,9 +210,9 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 		if (direction == SwipeConstants.SWIPE_TO_UP) {
 			if (!isShowAnimation) {
 				mISwipeDetector.setInterceptTouchEvent(false);
-				if (listener != null) listener.onAnimationStart(null);
+				if (listener != null) listener.onAnimationStart();
 				resetLoadingViewPosition(SwipeConstants.POSITION_BOTTOM);
-				if (listener != null) listener.onAnimationEnd(null);
+				if (listener != null) listener.onAnimationEnd();
 				mISwipeDetector.setInterceptTouchEvent(true);
 				return;
 			}
@@ -204,36 +220,34 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 		} else {
 			if (!isShowAnimation) {
 				mISwipeDetector.setInterceptTouchEvent(false);
-				if (listener != null) listener.onAnimationStart(null);
+				if (listener != null) listener.onAnimationStart();
 				resetLoadingViewPosition(SwipeConstants.POSITION_ABOVE);
-				if (listener != null) listener.onAnimationEnd(null);
+				if (listener != null) listener.onAnimationEnd();
 				mISwipeDetector.setInterceptTouchEvent(true);
 				return;
 			}
 			targetTranslateY = -mISwipeDetector.getTotalHeight();
 		}
 		// Execute animation job.
-		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", ViewCompat.getTranslationY(mLoadingView), targetTranslateY);
-		objectAnimator.setDuration(mDuration);
-		objectAnimator.setInterpolator(new LinearInterpolator());
-		objectAnimator.addListener(new SwipeAnimatorListener() {
-
+		iAnimationHandler.hide(mLoadingView, "translationY", targetTranslateY, new OnSwipeAnimationListener() {
 			@Override
-			public void onAnimationStart(Animator animation) {
+			public void onAnimationStart() {
 				mISwipeDetector.setInterceptTouchEvent(false);
+				if (listener != null)
+					listener.onAnimationStart();
 			}
 
 			@Override
-			public void onAnimationEnd(Animator animation) {
+			public void onAnimationEnd() {
 				mISwipeDetector.setInterceptTouchEvent(true);
+				if (listener != null)
+					listener.onAnimationEnd();
 			}
 		});
-		if (listener != null) objectAnimator.addListener(listener);
-		objectAnimator.start();
 	}
 
 	@Override
-	public void showLoadingView(boolean isShowAnimation, int direction, SwipeAnimatorListener listener) {
+	public void showLoadingView(boolean isShowAnimation, int direction, final OnSwipeAnimationListener listener) {
 		if (mLoadingView == null) {
 			LogUtil.w(TAG, "[showLoadingView] mLoadingView is null");
 			return;
@@ -243,31 +257,33 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 
 		if (direction == SwipeConstants.SWIPE_UNKNOWN) {
 			mISwipeDetector.setInterceptTouchEvent(false);
-			if (listener != null) listener.onAnimationStart(null);
+			if (listener != null) listener.onAnimationStart();
 			resetLoadingViewPosition(SwipeConstants.POSITION_CENTER);
-			if (listener != null) listener.onAnimationEnd(null);
+			if (listener != null) listener.onAnimationEnd();
 		}
 
 		if (!isShowAnimation) {
 			mISwipeDetector.setInterceptTouchEvent(false);
-			if (listener != null) listener.onAnimationStart(null);
+			if (listener != null) listener.onAnimationStart();
 			resetLoadingViewPosition(SwipeConstants.POSITION_CENTER);
-			if (listener != null) listener.onAnimationEnd(null);
+			if (listener != null) listener.onAnimationEnd();
 			return;
 		}
 		// Execute animation job.
-		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mLoadingView, "translationY", ViewCompat.getTranslationY(mLoadingView), 0f);
-		objectAnimator.setInterpolator(new LinearInterpolator());
-		objectAnimator.setDuration(mDuration);
-		objectAnimator.addListener(new SwipeAnimatorListener() {
+		iAnimationHandler.show(mLoadingView, "translationY", new OnSwipeAnimationListener() {
+			@Override
+			public void onAnimationStart() {
+				mISwipeDetector.setInterceptTouchEvent(false);
+				if (listener != null)
+					listener.onAnimationStart();
+			}
 
 			@Override
-			public void onAnimationStart(Animator animation) {
-				mISwipeDetector.setInterceptTouchEvent(false);
+			public void onAnimationEnd() {
+				if (listener != null)
+					listener.onAnimationEnd();
 			}
 		});
-		if (listener != null) objectAnimator.addListener(listener);
-		objectAnimator.start();
 	}
 
 	@Override
@@ -292,7 +308,7 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 
 	@Override
 	public void setAnimationDuration(int duration) {
-		this.mDuration = duration;
+		this.iAnimationHandler.setDuration(duration);
 	}
 
 	@Override

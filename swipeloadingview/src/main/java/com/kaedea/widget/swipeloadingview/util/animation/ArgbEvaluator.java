@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kaedea.widget.swipeloadingview.animation;
+package com.kaedea.widget.swipeloadingview.util.animation;
 
 /**
  * This evaluator can be used to perform type interpolation between integer

@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.kaedea.widget.swipeloadingview.core.OnSwipeAnimationListener;
 import com.kaedea.widget.swipeloadingview.util.animation.Animator;
 import com.kaedea.widget.swipeloadingview.util.animation.ObjectAnimator;
 import com.kaedea.widget.swipeloadingview.core.IAnimationHandler;

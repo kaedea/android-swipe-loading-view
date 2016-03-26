@@ -6,7 +6,6 @@ import android.view.View;
 import com.kaedea.widget.swipeloadingview.core.IAnimationHandler;
 import com.kaedea.widget.swipeloadingview.core.ISwipeDetector;
 import com.kaedea.widget.swipeloadingview.core.ISwipeHandler;
-import com.kaedea.widget.swipeloadingview.core.OnSwipeAnimationListener;
 import com.kaedea.widget.swipeloadingview.core.OnSwipeListener;
 import com.kaedea.widget.swipeloadingview.core.SwipeConstants;
 import com.kaedea.widget.swipeloadingview.util.LogUtil;
@@ -122,7 +121,7 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 				// Can not reach the "Swipe Threshold", therefore taking it as Cancel;
 				if (mOnSwipeListener != null)
 					mOnSwipeListener.onPostSwipeCancel(mDirection);
-				hideLoadingView(true, direction, new OnSwipeAnimationListener() {
+				hideLoadingView(true, direction, new IAnimationHandler.OnSwipeAnimationListener() {
 
 					@Override
 					public void onAnimationStart() {
@@ -141,7 +140,7 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 				// Reach the "Swipe Threshold", therefore taking it as Finish;
 				if (mOnSwipeListener != null)
 					mOnSwipeListener.onPostSwipeFinish(mDirection);
-				showLoadingView(true, direction, new OnSwipeAnimationListener() {
+				showLoadingView(true, direction, new IAnimationHandler.OnSwipeAnimationListener() {
 					@Override
 					public void onAnimationStart() {
 
@@ -189,7 +188,7 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 
 
 	@Override
-	public void hideLoadingView(boolean isShowAnimation, int direction, final OnSwipeAnimationListener listener) {
+	public void hideLoadingView(boolean isShowAnimation, int direction, final IAnimationHandler.OnSwipeAnimationListener listener) {
 		if (mLoadingView == null) {
 			LogUtil.w(TAG, "[hideLoadingView] mLoadingView is null");
 			return;
@@ -229,7 +228,7 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 			targetTranslateY = -mISwipeDetector.getTotalHeight();
 		}
 		// Execute animation job.
-		iAnimationHandler.hide(mLoadingView, "translationY", targetTranslateY, new OnSwipeAnimationListener() {
+		iAnimationHandler.hide(mLoadingView, "translationY", targetTranslateY, new IAnimationHandler.OnSwipeAnimationListener() {
 			@Override
 			public void onAnimationStart() {
 				mISwipeDetector.setInterceptTouchEvent(false);
@@ -247,7 +246,7 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 	}
 
 	@Override
-	public void showLoadingView(boolean isShowAnimation, int direction, final OnSwipeAnimationListener listener) {
+	public void showLoadingView(boolean isShowAnimation, int direction, final IAnimationHandler.OnSwipeAnimationListener listener) {
 		if (mLoadingView == null) {
 			LogUtil.w(TAG, "[showLoadingView] mLoadingView is null");
 			return;
@@ -270,7 +269,7 @@ public class DefaultSwipeHandler implements ISwipeHandler {
 			return;
 		}
 		// Execute animation job.
-		iAnimationHandler.show(mLoadingView, "translationY", new OnSwipeAnimationListener() {
+		iAnimationHandler.show(mLoadingView, "translationY", new IAnimationHandler.OnSwipeAnimationListener() {
 			@Override
 			public void onAnimationStart() {
 				mISwipeDetector.setInterceptTouchEvent(false);

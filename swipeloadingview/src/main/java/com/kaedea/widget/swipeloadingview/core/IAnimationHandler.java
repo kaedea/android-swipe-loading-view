@@ -14,4 +14,11 @@ public interface IAnimationHandler {
     void setDuration(int duration);
 
     void setInterpolator(Interpolator interpolator);
+
+
+    interface OnSwipeAnimationListener {
+        public void onAnimationStart();
+
+        public void onAnimationEnd();
+    }
 }
